@@ -1,0 +1,43 @@
+{
+  "module": "my_circuit",
+  "inputs": [
+    "a",
+    "b",
+    "c"
+  ],
+  "outputs": [
+    "y"
+  ],
+  "expression_tree": {
+    "y": {
+      "Or": [
+        {
+          "And": [
+            {
+              "Unot": [
+                "a"
+              ]
+            },
+            "b"
+          ]
+        },
+        {
+          "And": [
+            {
+              "And": [
+                "b",
+                "c"
+              ]
+            },
+            {
+              "Or": [
+                "b",
+                "c"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
