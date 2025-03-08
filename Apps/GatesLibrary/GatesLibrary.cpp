@@ -15,18 +15,18 @@
 #include <iostream>
 using namespace std;
 
-int main()
+int test()
 {
 	AndGate andGate(1.0);
 	andGate.setInputs({ true, false });
 	andGate.compute();
 	cout << "AND Gate output : " << andGate.getOutput() << endl;
-	
+
 	OrGate orGate(0.75);
 	orGate.setInputs({ true, true });
 	orGate.compute();
 	cout << "OR Gate output : " << orGate.getOutput() << endl;
-	
+
 	NotGate notGate(0.2);
 	notGate.setInputs({ true });
 	notGate.compute();
@@ -41,7 +41,7 @@ int main()
 	nandGate.setInputs({ true, true });
 	nandGate.compute();
 	cout << "NAND Gate output : " << nandGate.getOutput() << endl;
-	
+
 	NorGate norGate(0.2);
 	norGate.setInputs({ false, false });
 	norGate.compute();
@@ -51,12 +51,12 @@ int main()
 	xnorGate.setInputs({ false, false });
 	xnorGate.compute();
 	cout << "XNOR Gate output : " << xnorGate.getOutput() << endl;
-	
+
 	BufferGate bufferGate(0.5);
 	bufferGate.setInputs({ false });
 	bufferGate.compute();
 	cout << "BUFFER Gate output : " << bufferGate.getOutput() << endl;
-	
+
 	MultipleInputAndGate multipleInputAndGate(3, 0.5);
 	multipleInputAndGate.setInputs({ false, true, true });
 	multipleInputAndGate.compute();
@@ -66,7 +66,7 @@ int main()
 	multipleInputOrGate.setInputs({ false, true, true });
 	multipleInputOrGate.compute();
 	cout << "Multiple input OR Gate output : " << multipleInputOrGate.getOutput() << endl;
-	
+
 	DFlipFlop dFF(0.4);
 	dFF.setClock(false);
 	dFF.setInputs({ false, true });
@@ -92,7 +92,7 @@ int main()
 
 	for (const auto& testCase : testCasesM) {
 		int expectedControl = testCase.first;
-	    const vector<bool>& controlSignals = testCase.second;
+		const vector<bool>& controlSignals = testCase.second;
 
 		vector<bool> allInputs = { input0, input1, input2, input3 };
 		allInputs.insert(allInputs.end(), controlSignals.begin(), controlSignals.end());
@@ -104,7 +104,7 @@ int main()
 		for (bool signal : controlSignals) {
 			cout << signal;
 		}
-		
+
 		cout << "):\n";
 		cout << "Input0: " << input0 << ", Input1: " << input1
 			<< ", Input2: " << input2 << ", Input3: " << input3 << "\n";
@@ -124,4 +124,9 @@ int main()
 	fullAdder.compute();
 	cout << "Fulladder output sum & carry : " << fullAdder.getSum() << " & " << fullAdder.getCarry() << endl;
 	return 0;
+}
+
+int main()
+{
+	
 }

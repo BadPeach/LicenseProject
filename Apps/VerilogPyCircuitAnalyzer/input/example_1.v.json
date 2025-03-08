@@ -1,0 +1,43 @@
+{
+  "module": "simple_logic",
+  "inputs": [
+    "A",
+    "B",
+    "C"
+  ],
+  "outputs": [
+    "Y"
+  ],
+  "expression_tree": {
+    "Y": {
+      "And": [
+        {
+          "And": [
+            {
+              "Unot": [
+                {
+                  "And": [
+                    "A",
+                    "B"
+                  ]
+                }
+              ]
+            },
+            {
+              "Or": [
+                "B",
+                "C"
+              ]
+            }
+          ]
+        },
+        {
+          "Xor": [
+            "A",
+            "C"
+          ]
+        }
+      ]
+    }
+  }
+}

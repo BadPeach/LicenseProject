@@ -13,102 +13,108 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Gates">
+      <UniqueIdentifier>{bb62a350-0803-4ed7-8653-5e055cb69e5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Gates">
+      <UniqueIdentifier>{aba14aa2-51ac-4b7e-87c6-5576dff73423}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GatesLibrary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AndGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Gate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OrGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NotGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XorGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NandGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NorGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XnorGate.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Gates</Filter>
     </ClCompile>
     <ClCompile Include="BufferGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultipleInputAndGate.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultipleInputOrGate.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Gates</Filter>
     </ClCompile>
     <ClCompile Include="DFlipFlop.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Multiplexer.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HalfAdder.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Gates</Filter>
     </ClCompile>
     <ClCompile Include="FullAdder.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="Gate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="HalfAdder.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="MultipleInputAndGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="MultipleInputOrGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="Multiplexer.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="NandGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="NorGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="NotGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="OrGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="XnorGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
+    </ClCompile>
+    <ClCompile Include="XorGate.cpp">
+      <Filter>Resource Files\Gates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AndGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OrGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NotGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XorGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NandGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NorGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XnorGate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Gates</Filter>
     </ClInclude>
     <ClInclude Include="BufferGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultipleInputAndGate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MultipleInputOrGate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Gates</Filter>
     </ClInclude>
     <ClInclude Include="DFlipFlop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Multiplexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HalfAdder.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Gates</Filter>
     </ClInclude>
     <ClInclude Include="FullAdder.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="Gate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="HalfAdder.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="MultipleInputAndGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="MultipleInputOrGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="Multiplexer.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="NandGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="NorGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="NotGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="OrGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="XnorGate.h">
+      <Filter>Header Files\Gates</Filter>
+    </ClInclude>
+    <ClInclude Include="XorGate.h">
+      <Filter>Header Files\Gates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
