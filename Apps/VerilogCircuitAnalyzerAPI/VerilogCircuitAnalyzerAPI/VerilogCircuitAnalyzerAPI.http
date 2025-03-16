@@ -1,0 +1,6 @@
+@VerilogCircuitAnalyzerAPI_HostAddress = http://localhost:5283
+
+GET {{VerilogCircuitAnalyzerAPI_HostAddress}}/circuitanalysis/
+Accept: application/json
+
+###
