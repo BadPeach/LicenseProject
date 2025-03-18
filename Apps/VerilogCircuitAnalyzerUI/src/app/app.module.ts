@@ -6,17 +6,22 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { CircuitAnalyzerComponent } from './circuit-analyzer/circuit-analyzer.component';
 import {FileUploadModule} from 'ng2-file-upload';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    CircuitAnalyzerComponent
+    CircuitAnalyzerComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FileUploadModule
+    FileUploadModule,
+    BrowserAnimationsModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]
