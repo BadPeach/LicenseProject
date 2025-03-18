@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
+import {NgClass, NgFor, NgIf, NgStyle} from '@angular/common';
 
 @Component({
   selector: 'app-circuit-analyzer',
