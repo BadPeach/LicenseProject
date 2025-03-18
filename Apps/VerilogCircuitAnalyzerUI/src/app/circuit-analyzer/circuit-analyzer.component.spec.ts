@@ -8,7 +8,7 @@ describe('CircuitAnalyzerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CircuitAnalyzerComponent]
+      declarations: [CircuitAnalyzerComponent]
     })
     .compileComponents();
 
