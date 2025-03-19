@@ -8,20 +8,24 @@ import { CircuitAnalyzerComponent } from './circuit-analyzer/circuit-analyzer.co
 import {FileUploadModule} from 'ng2-file-upload';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
+import { CircuitDisplayComponent } from './circuit-display/circuit-display.component';
+import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagrams';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     CircuitAnalyzerComponent,
-    HeaderComponent
+    HeaderComponent,
+    CircuitDisplayComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FileUploadModule,
     BrowserAnimationsModule,
-
+    DiagramModule,
+    SymbolPaletteModule
   ],
   providers: [],
   bootstrap: [AppComponent]
