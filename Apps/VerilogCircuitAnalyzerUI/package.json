@@ -17,6 +17,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@syncfusion/ej2-angular-diagrams": "^28.2.12",
     "bootstrap": "^5.2.3",
     "font-awesome": "^4.7.0",
     "ng2-file-upload": "^8.0.0",
