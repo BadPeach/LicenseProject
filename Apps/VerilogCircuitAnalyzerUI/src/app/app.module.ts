@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { CircuitDisplayComponent } from './circuit-display/circuit-display.component';
 import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagrams';
+import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-v2.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagra
     HomeComponent,
     CircuitAnalyzerComponent,
     HeaderComponent,
-    CircuitDisplayComponent
+    CircuitDisplayComponent,
+    CircuitDisplayV2Component
   ],
   imports: [
     BrowserModule,
