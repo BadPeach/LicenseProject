@@ -29,9 +29,8 @@ namespace VerilogCircuitAnalyzerAPI.Controllers
         {
             try
             {
-                var result = _circuitAnalysisService.SaveUploadedFile(file);
-                _logger.LogInformation($"File uploaded: {result.fileName}");
-                return Ok(new { FileName = result.fileName, FilePath = result.filePath });
+                var result = _circuitAnalysisService.ProcessVerilogFile(file);
+                return Ok(result);
             }
             catch (Exception ex)
             {

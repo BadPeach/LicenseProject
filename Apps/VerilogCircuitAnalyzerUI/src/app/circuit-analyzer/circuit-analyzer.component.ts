@@ -13,32 +13,24 @@ export class CircuitAnalyzerComponent {
   backend_url: string = 'http://localhost:5283/api/CircuitAnalysis/processVerilogFile';
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
-  hasAnotherDropZoneOver:boolean;
   response:string;
 
   constructor (){
+    this.response = '';
     this.uploader = new FileUploader({
       url: this.backend_url,
-      disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      formatDataFunctionIsAsync: true,
-      formatDataFunction: async (item: any) => {
-        return new Promise( (resolve, reject) => {
-          resolve({
-            name: item._file.name,
-            length: item._file.size,
-            contentType: item._file.type,
-            date: new Date()
-          });
-        });
-      }
+      disableMultipart: false,
+      autoUpload: false,
     });
 
+    this.uploader.onAfterAddingFile = f => {
+      if (this.uploader.queue.length > 1) {
+        this.uploader.removeFromQueue(this.uploader.queue[0])
+      }
+    };
+
     this.hasBaseDropZoneOver = false;
-    this.hasAnotherDropZoneOver = false;
-
-    this.response = '';
-
-    this.uploader.response.subscribe( res => this.response = res );
+    this.uploader.response.subscribe( res => this.response = JSON.parse(res) );
   }
 
   public fileOverBase(e:any):void {

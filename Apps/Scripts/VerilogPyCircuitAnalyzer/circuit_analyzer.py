@@ -1,4 +1,6 @@
 import json
+import sys
+
 
 class ASTNode:
     def get_delay(self):
@@ -134,8 +136,7 @@ def parse_circuit(json_data):
     circuit = parse_ast(output_expr)
     return circuit
 
-# Exemplu de folosire:
-if __name__ == '__main__':
+def test():
     with open("input/example_2.v.json") as input_file:
         data = json.load(input_file)
         myCircuit = parse_circuit(data)
@@ -147,3 +148,14 @@ if __name__ == '__main__':
         myCircuit.set_input_values(input_values)
         result = myCircuit.evaluate()
         print("Rezultat evaluare circuit:", result)
+
+
+# Exemplu de folosire:
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print("Usage: python circuit_analyzer.py")
+        sys.exit(1)
+    input_filename =  "{}".format(sys.argv[1])
+    output_filename = "{}".format(sys.argv[2])
+    with open(output_filename, 'w') as outfile:
+        json.dump({"delay": "dummy", "optimized_circuit": "dummy"}, outfile, indent=2)

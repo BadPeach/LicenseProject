@@ -1,7 +1,6 @@
 <div class="container">
   <div class="navbar navbar-default">
     <div class="navbar-header">
-      <a class="navbar-brand" href>Angular2 File Upload</a>
     </div>
   </div>
 
@@ -18,13 +17,11 @@
       >
         Base drop zone
       </div>
-
-      Single
       <input type="file" ng2FileSelect [uploader]="uploader" />
     </div>
 
     <div class="col-md-9" style="margin-bottom: 40px">
-      <h3>Upload queue</h3>
+      <h3>Upload Verilog file</h3>
       <p>Queue length: {{ uploader?.queue?.length }}</p>
 
       <table class="table">
@@ -68,7 +65,7 @@
           <td nowrap>
             <button
               type="button"
-              class="btn btn-success btn-xs"
+              class="btn btn-success btn-xs m-1"
               (click)="item.upload()"
               [disabled]="item.isReady || item.isUploading || item.isSuccess"
             >
@@ -76,7 +73,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-warning btn-xs"
+              class="btn btn-warning btn-xs m-1"
               (click)="item.cancel()"
               [disabled]="!item.isUploading"
             >
@@ -84,7 +81,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-danger btn-xs"
+              class="btn btn-danger btn-xs m-1"
               (click)="item.remove()"
             >
               <span class="glyphicon glyphicon-trash"></span> Remove
@@ -105,30 +102,6 @@
             ></div>
           </div>
         </div>
-        <button
-          type="button"
-          class="btn btn-success btn-s"
-          (click)="uploader.uploadAll()"
-          [disabled]="!uploader.getNotUploadedItems().length"
-        >
-          <span class="glyphicon glyphicon-upload"></span> Upload all
-        </button>
-        <button
-          type="button"
-          class="btn btn-warning btn-s"
-          (click)="uploader.cancelAll()"
-          [disabled]="!uploader.isUploading"
-        >
-          <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger btn-s"
-          (click)="uploader.clearQueue()"
-          [disabled]="!uploader.queue.length"
-        >
-          <span class="glyphicon glyphicon-trash"></span> Remove all
-        </button>
       </div>
     </div>
   </div>
@@ -140,7 +113,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">Response</div>
         <div class="panel-body">
-          {{ response }}
+          <pre>{{ response | json }}</pre>
         </div>
       </div>
     </div>

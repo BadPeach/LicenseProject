@@ -155,11 +155,11 @@ def parse_verilog_file(filename):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print("Usage: python parser.py <verilog_file>")
         sys.exit(1)
-    input_filename =  "input/{}".format(sys.argv[1])
-    output_filename = "output/{}.json".format(sys.argv[1])
+    input_filename =  "{}".format(sys.argv[1])
+    output_filename = "{}".format(sys.argv[2])
     parsed_result = parse_verilog_file(input_filename)
     with open(output_filename, 'w') as outfile:
         json.dump(parsed_result, outfile, indent=2)
