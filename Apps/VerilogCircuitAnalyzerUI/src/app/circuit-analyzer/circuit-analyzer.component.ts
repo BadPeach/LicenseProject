@@ -16,7 +16,6 @@ export class CircuitAnalyzerComponent {
   response:string;
 
   constructor (){
-    this.response = '';
     this.uploader = new FileUploader({
       url: this.backend_url,
       disableMultipart: false,
@@ -35,5 +34,16 @@ export class CircuitAnalyzerComponent {
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
+  }
+
+  triggerFileInput() {
+    const fileInput = document.getElementById('fileUpload') as HTMLInputElement;
+    fileInput.click();
+    this.clearCircuitData();
+  }
+
+  clearCircuitData() {
+    this.uploader.clearQueue();
+    this.response = null;
   }
 }

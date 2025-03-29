@@ -5,19 +5,31 @@
   </div>
 
   <div class="row">
-    <div class="col-md-3">
-      <h3>Select files</h3>
-
+    <div class="col-md-3 text-center">
       <div
         ng2FileDrop
         [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
         (fileOver)="fileOverBase($event)"
         [uploader]="uploader"
-        class="well my-drop-zone"
+        class="well my-drop-zone text-center p-5"
       >
-        Base drop zone
+      <i class="fa fa-solid fa-upload fa-2x"></i>
       </div>
-      <input type="file" ng2FileSelect [uploader]="uploader" />
+
+      <!-- Hidden file input -->
+      <input
+        type="file"
+        id="fileUpload"
+        ng2FileSelect
+        [uploader]="uploader"
+        class="d-none "
+      />
+
+      <!-- Custom Bootstrap button -->
+      <button type="button" class="btn btn-outline-primary w-100 mt-3" (click)="triggerFileInput()">
+        Select Verilog File
+      </button>
+
     </div>
 
     <div class="col-md-9" style="margin-bottom: 40px">
@@ -69,7 +81,7 @@
               (click)="item.upload()"
               [disabled]="item.isReady || item.isUploading || item.isSuccess"
             >
-              <span class="glyphicon glyphicon-upload"></span> Upload
+              <i class="fa fa-upload"></i> Upload
             </button>
             <button
               type="button"
@@ -77,14 +89,14 @@
               (click)="item.cancel()"
               [disabled]="!item.isUploading"
             >
-              <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+              <i class="fa fa-ban"></i> Cancel
             </button>
             <button
               type="button"
               class="btn btn-danger btn-xs m-1"
-              (click)="item.remove()"
+              (click)="clearCircuitData()"
             >
-              <span class="glyphicon glyphicon-trash"></span> Remove
+              <i class="fa fa-trash"></i> Remove
             </button>
           </td>
         </tr>
@@ -103,6 +115,14 @@
           </div>
         </div>
       </div>
+
+      <div *ngIf="response" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          <ngx-json-viewer [json]="response"></ngx-json-viewer>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -110,12 +130,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">Response</div>
-        <div class="panel-body">
-          <pre>{{ response | json }}</pre>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>

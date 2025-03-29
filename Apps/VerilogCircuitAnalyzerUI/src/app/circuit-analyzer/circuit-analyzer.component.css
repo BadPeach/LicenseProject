@@ -10,3 +10,7 @@
   border: dotted 3px green;
 }
 
+.response-tab {
+  border: 1px groove #929fb6;
+  border-radius: 10px;
+}

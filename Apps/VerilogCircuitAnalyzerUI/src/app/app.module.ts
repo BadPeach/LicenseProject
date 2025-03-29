@@ -11,6 +11,7 @@ import { HeaderComponent } from './header/header.component';
 import { CircuitDisplayComponent } from './circuit-display/circuit-display.component';
 import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagrams';
 import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-v2.component';
+import {NgxJsonViewerModule} from 'ngx-json-viewer';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-
     CircuitDisplayV2Component
   ],
   imports: [
+    NgxJsonViewerModule,
     BrowserModule,
     AppRoutingModule,
     FileUploadModule,
