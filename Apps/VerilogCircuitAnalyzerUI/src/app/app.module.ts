@@ -12,6 +12,7 @@ import { CircuitDisplayComponent } from './circuit-display/circuit-display.compo
 import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagrams';
 import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-v2.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
+import {ClipboardModule} from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
     CircuitDisplayV2Component
   ],
   imports: [
+    ClipboardModule,
     NgxJsonViewerModule,
     BrowserModule,
     AppRoutingModule,

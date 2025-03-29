@@ -8,23 +8,27 @@
   "outputs": [
     "Y"
   ],
+  "gates": {
+    "and": 3,
+    "not": 1,
+    "or": 1,
+    "xor": 1
+  },
   "expression_tree": {
     "Y": {
-      "And": [
+      "and": [
         {
-          "And": [
+          "and": [
             {
-              "Unot": [
-                {
-                  "And": [
-                    "A",
-                    "B"
-                  ]
-                }
-              ]
+              "not": {
+                "and": [
+                  "A",
+                  "B"
+                ]
+              }
             },
             {
-              "Or": [
+              "or": [
                 "B",
                 "C"
               ]
@@ -32,7 +36,7 @@
           ]
         },
         {
-          "Xor": [
+          "xor": [
             "A",
             "C"
           ]

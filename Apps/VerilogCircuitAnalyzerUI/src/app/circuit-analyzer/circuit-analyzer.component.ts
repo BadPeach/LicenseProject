@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
-import {NgClass, NgFor, NgIf, NgStyle} from '@angular/common';
+import {Clipboard} from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-circuit-analyzer',
@@ -13,9 +13,9 @@ export class CircuitAnalyzerComponent {
   backend_url: string = 'http://localhost:5283/api/CircuitAnalysis/processVerilogFile';
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
-  response:string;
+  parserResponse: {};
 
-  constructor (){
+  constructor (private clipboard: Clipboard) {
     this.uploader = new FileUploader({
       url: this.backend_url,
       disableMultipart: false,
@@ -29,7 +29,7 @@ export class CircuitAnalyzerComponent {
     };
 
     this.hasBaseDropZoneOver = false;
-    this.uploader.response.subscribe( res => this.response = JSON.parse(res) );
+    this.uploader.response.subscribe( res => this.parserResponse = JSON.parse(res) );
   }
 
   public fileOverBase(e:any):void {
@@ -44,6 +44,17 @@ export class CircuitAnalyzerComponent {
 
   clearCircuitData() {
     this.uploader.clearQueue();
-    this.response = null;
+    this.parserResponse = null;
+  }
+
+  isCollapsed = true; // implicit collapsed
+  toggleCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
+  copyJson(): void {
+    const jsonString = JSON.stringify(this.parserResponse, null, 2);
+    this.clipboard.copy(jsonString);
+    console.log('JSON copied to clipboard!');
   }
 }

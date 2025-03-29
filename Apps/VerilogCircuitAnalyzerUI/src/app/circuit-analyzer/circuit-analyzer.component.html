@@ -27,6 +27,7 @@
 
       <!-- Custom Bootstrap button -->
       <button type="button" class="btn btn-outline-primary w-100 mt-3" (click)="triggerFileInput()">
+        <i class="fa fa-file"></i>
         Select Verilog File
       </button>
 
@@ -116,10 +117,21 @@
         </div>
       </div>
 
-      <div *ngIf="response" class="panel panel-default response-tab mt-3 p-2">
-        <div class="panel-heading"></div>
-        <div class="panel-body">
-          <ngx-json-viewer [json]="response"></ngx-json-viewer>
+      <div *ngIf="parserResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-outline-info" (click)="toggleCollapse()">
+            <i class="fa"
+               [ngClass]="isCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isCollapsed ? 'Show Parser Response' : 'Hide Parser Response' }}
+          </button>
+
+          <button type="button" class="btn btn-warning" (click)="copyJson()">
+            <i class="fa fa-copy"></i>
+            Copy JSON
+          </button>
+        </div>
+        <div class="panel-body mt-2" [hidden]="isCollapsed">
+          <ngx-json-viewer [json]="parserResponse" [expanded]="false"></ngx-json-viewer>
         </div>
       </div>
 
