@@ -6,11 +6,16 @@ export type Expression =
   | string
   | { not?: Expression }
   | { and?: Expression[] }
-  | { or?: Expression[] };
+  | { or?: Expression[] }
+  | { xor?: Expression[] }
+  | { nand?: Expression[] }
+  | { nor?: Expression[] };
 
 export interface CircuitDefinition {
-  input: string[];
-  circuit: Expression;
+  inputs: string[];
+  outputs: string[];
+  gates: any[];
+  expression_tree: Expression;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,6 +34,9 @@ export class CircuitBuilderService {
   private andCount = 0;
   private orCount = 0;
   private notCount = 0;
+  private norCount = 0;
+  private nandCount = 0;
+  private xorCount = 0;
   private varCount = 0;
 
   // For caching measureHeight results
@@ -51,13 +59,14 @@ export class CircuitBuilderService {
     this.sizeMap = new WeakMap<object, number>();
 
     // 1) measure max depth so we can "flip" horizontally
-    this.maxDepth = this.measureMaxDepth(def.circuit, 0);
+    console.log(def.expression_tree)
+    this.maxDepth = this.measureMaxDepth(def.expression_tree, 0);
 
     // 2) measure how many "slots" the root subtree needs
-    const totalSlots = this.measureHeight(def.circuit);
+    const totalSlots = this.measureHeight(def.expression_tree);
 
     // 3) parse & place nodes into [top=0 .. height=totalSlots]
-    this.parseExpr(def.circuit, 0, 0, totalSlots);
+    this.parseExpr(def.expression_tree, 0, 0, totalSlots);
 
     return {
       nodes: this.nodes,
@@ -91,19 +100,33 @@ export class CircuitBuilderService {
         throw new Error('Invalid NOT expression');
       }
       size = this.measureHeight(expr.not);
-    }
-    else if ('and' in expr) {
+    } else if ('nand' in expr) {
+      if (!expr.nand) {
+        throw new Error('Invalid NAND expression');
+      }
+      size = expr.nand.reduce((sum, child) => sum + this.measureHeight(child), 0);
+    } else if ('nor' in expr) {
+      if (!expr.nor) {
+        throw new Error('Invalid NOR expression');
+      }
+      size = expr.nor.reduce((sum, child) => sum + this.measureHeight(child), 0);
+    } else if ('xor' in expr) {
+      if (!expr.xor) {
+        throw new Error('Invalid XOR expression');
+      }
+      size = expr.xor.reduce((sum, child) => sum + this.measureHeight(child), 0);
+    } else if ('and' in expr) {
       if (!expr.and) {
         throw new Error('Invalid AND expression');
       }
       size = expr.and.reduce((sum, child) => sum + this.measureHeight(child), 0);
-    }
-    else if ('or' in expr) {
+    } else if ('or' in expr) {
       if (!expr.or) {
         throw new Error('Invalid OR expression');
       }
       size = expr.or.reduce((sum, child) => sum + this.measureHeight(child), 0);
     } else {
+      console.log(expr)
       throw new Error('Invalid expression: ' + JSON.stringify(expr));
     }
 
@@ -189,6 +212,50 @@ export class CircuitBuilderService {
       }
       return this.createGateNode('OR', childrenInfo, offsetX, offsetY);
     }
+    else if ('xor' in expr) {
+      if (!expr.xor) {
+        throw new Error('Invalid XOR expression');
+      }
+      // Subdivide among XOR children
+      let childTop = top;
+      const childrenInfo: Array<{ nodeId: string; midSlot: number }> = [];
+      for (const child of expr.xor) {
+        const csize = this.measureHeight(child);
+        const info = this.parseExpr(child, depth + 1, childTop, csize);
+        childrenInfo.push(info);
+        childTop += csize;
+      }
+      return this.createGateNode('XOR', childrenInfo, offsetX, offsetY);
+    } else if ('nand' in expr) {
+      if (!expr.nand) {
+        throw new Error('Invalid NAND expression');
+      }
+      // Subdivide among NAND children
+      let childTop = top;
+      const childrenInfo: Array<{ nodeId: string; midSlot: number }> = [];
+      for (const child of expr.nand) {
+        const csize = this.measureHeight(child);
+        const info = this.parseExpr(child, depth + 1, childTop, csize);
+        childrenInfo.push(info);
+        childTop += csize;
+      }
+      return this.createGateNode('NAND', childrenInfo, offsetX, offsetY);
+    } else if ('nor' in expr) {
+      if (!expr.nor) {
+        throw new Error('Invalid NOR expression');
+      }
+      // Subdivide among NOR children
+      let childTop = top;
+      const childrenInfo: Array<{ nodeId: string; midSlot: number }> = [];
+      for (const child of expr.nor) {
+        const csize = this.measureHeight(child);
+        const info = this.parseExpr(child, depth + 1, childTop, csize);
+        childrenInfo.push(info);
+        childTop += csize;
+      }
+      return this.createGateNode('NOR', childrenInfo, offsetX, offsetY);
+    }
+
     else {
       throw new Error('Invalid expression: ' + JSON.stringify(expr));
     }
@@ -208,7 +275,7 @@ export class CircuitBuilderService {
   //  Return { nodeId, midSlot } so parents can center above their children.
   // ------------------------------------------------------------------------
   private createGateNode(
-    gateType: 'AND' | 'OR' | 'NOT',
+    gateType: 'AND' | 'OR' | 'NOT' | 'XOR' | 'NAND' | 'NOR',
     children: Array<{ nodeId: string; midSlot: number }>,
     offsetX: number,
     offsetY: number
@@ -229,7 +296,23 @@ export class CircuitBuilderService {
         nodeId = `not_${this.notCount++}`;
         pathData = 'M0,0 L40,20 L0,40 Z';
         break;
+      case 'XOR':
+        nodeId = `xor_${this.xorCount++}`;
+        // The XOR shape is similar to OR but with an extra offset curve on the left.
+        pathData = 'M5,0 C30,0 30,40 5,40 C0,30 0,10 5,0 Z';
+        break;
+      case 'NAND':
+        nodeId = `nand_${this.nandCount++}`;
+        // NAND is like an AND gate with a small inversion circle at the output.
+        pathData = 'M0,0 L40,0 L40,40 Q20,40 0,40 Z M45,20 A5,5 0 1,1 44.9,20 Z';
+        break;
+      case 'NOR':
+        nodeId = `nor_${this.norCount++}`;
+        // NOR is like an OR gate with a small inversion circle.
+        pathData = 'M0,0 C25,0 25,40 0,40 Z M30,20 A5,5 0 1,1 29.9,20 Z';
+        break;
     }
+
 
     // Create the node
     this.nodes.push({
@@ -279,6 +362,30 @@ export class CircuitBuilderService {
       }
       const d = this.measureMaxDepth(expr.not, depth + 1);
       if (d > best) best = d;
+    } else if ('xor' in expr) {
+      if (!expr.xor) {
+        throw new Error('Invalid XOR expression');
+      }
+      for (const c of expr.xor) {
+        const d = this.measureMaxDepth(c, depth + 1);
+        if (d > best) best = d;
+      }
+    } else if ('nand' in expr) {
+      if (!expr.nand) {
+        throw new Error('Invalid NAND expression');
+      }
+      for (const c of expr.nand) {
+        const d = this.measureMaxDepth(c, depth + 1);
+        if (d > best) best = d;
+      }
+    } else if ('nor' in expr) {
+      if (!expr.nor) {
+        throw new Error('Invalid NOR expression');
+      }
+      for (const c of expr.nor) {
+        const d = this.measureMaxDepth(c, depth + 1);
+        if (d > best) best = d;
+      }
     } else if ('and' in expr) {
       if (!expr.and) {
         throw new Error('Invalid AND expression');
@@ -295,7 +402,8 @@ export class CircuitBuilderService {
         const d = this.measureMaxDepth(c, depth + 1);
         if (d > best) best = d;
       }
-    } else {
+    }
+    else {
       throw new Error('Invalid expression: ' + JSON.stringify(expr));
     }
     return best;

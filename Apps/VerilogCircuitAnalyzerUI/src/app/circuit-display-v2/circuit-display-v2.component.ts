@@ -37,8 +37,8 @@ export class CircuitDisplayV2Component implements OnInit {
   ngOnInit() {
     // Example input
     const definition = {
-      input: ["a", "b", "c"],
-      circuit: {
+      inputs: ["a", "b", "c"],
+      expression_tree: {
         "or": [
           {
             "and": [{"not": "a"}, "b"]
@@ -53,8 +53,12 @@ export class CircuitDisplayV2Component implements OnInit {
       }
     };
     const definition2={
-      "input": ["a", "b", "c"],
-      "circuit": {
+      "inputs": ["a", "b", "c"],
+      "outputs": ["y"],
+      "gates": [{
+        "and": 1, "or": 1, "not": 1
+      }],
+      "expression_tree": {
         "or": [
           {
             "and": [
@@ -72,8 +76,44 @@ export class CircuitDisplayV2Component implements OnInit {
       }
     }
 
+    const definition3={
+      "inputs": ["a", "b", "c"],
+      "outputs": ["y"],
+      "gates": [{
+        "and": 1, "or": 1, "not": 1
+      }],
+      "expression_tree": {
+        "and": [
+          {
+            "and": [
+              {
+                "not": {
+                  "and": [
+                    "A",
+                    "B"
+                  ]
+                }
+              },
+              {
+                "or": [
+                  "B",
+                  "C"
+                ]
+              }
+            ]
+          },
+          {
+            "xor": [
+              "A",
+              "C"
+            ]
+          }
+        ]
+      }
+    }
 
-    const {nodes, connectors} = this.circuitBuilder.buildCircuit(definition2);
+
+    const {nodes, connectors} = this.circuitBuilder.buildCircuit(definition3);
     this.nodes = nodes;
     this.connectors = connectors;
   }

@@ -167,14 +167,15 @@ def parse_verilog_file(filename):
 
     # Pentru fiecare ieșire, extindem recursiv definițiile semnalelor intermediare.
     expression_tree = {}
+    if len(outputs) != 1:
+        raise Exception("Expected only 1 output")
     for out in outputs:
         if out in assignment_map:
-            expr_tree = convert_expr(assignment_map[out], assignment_map)
-            # expr_tree = simplify_expr(expr_tree)
-            expression_tree[out] = expr_tree
+            expression_tree = convert_expr(assignment_map[out], assignment_map)
+            # expression_tree = simplify_expr(expression_tree)
 
     # Colectăm gate-urile din arborele expresiilor pentru toate ieșirile.
-    total_gate_counts = collect_gates(expr_tree)
+    total_gate_counts = collect_gates(expression_tree)
 
     return {
         "module": module_name,
