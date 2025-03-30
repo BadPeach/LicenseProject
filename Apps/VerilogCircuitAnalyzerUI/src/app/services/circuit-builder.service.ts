@@ -262,8 +262,25 @@ export class CircuitBuilderService {
   }
 
 
-  public orData: string = 'M21.7,76.5L21.7,76.5c6.4-18.1,6.4-37.8,0-55.9l0-0.1h1.6c21.5,0,41.7,10.4,54.2,28l0,0l0,0  c-12.5,17.6-32.7,28-54.2,28H21.7z M99.5,48.5l-22,0 M0,31.5h25 M0,65.5h25';
-  public andData: string = 'M21.5,20.5h28a28,28,0,0,1,28,28v0a28,28,0,0,1-28,28h-28a0,0,0,0,1,0,0v-56a0,0,0,0,1,0,0Z M78,48.5 L 100,48.5Z M0,32.5 L 21.4,32.5Z M0,65.5 L 21.4,65.5Z';
+  public orData: string = `
+  M 0,0
+  C 10,0  60,40  0,80
+  C 10,60  10,20  0,0
+  Z
+`;
+  public andData: string = `
+  M21.5,20.5
+  h80
+  a28,28,0,0,1,28,28
+  v0
+  a28,28,0,0,1,-28,28
+  h-80
+  v-56
+  Z
+  M129.5,48.5 L 130,48.5Z
+`;
+
+
   public notData: string = 'M75.5,50.5l-52,28v-56L75.5,50.5z M81.5,50.5h18 M1.5,50.5h22 M78.5,47.5c-1.7,0-3,1.3-3,3s1.3,3,3,3s3-1.3,3-3  S80.2,47.5,78.5,47.5z';
 
 
@@ -286,11 +303,11 @@ export class CircuitBuilderService {
     switch (gateType) {
       case 'AND':
         nodeId = `and_${this.andCount++}`;
-        pathData = 'M0,0 L40,0 L40,40 Q20,40 0,40 Z';
+        pathData = this.andData;
         break;
       case 'OR':
         nodeId = `or_${this.orCount++}`;
-        pathData = 'M0,0 C25,0 25,40 0,40 Z';
+        pathData = this.orData;
         break;
       case 'NOT':
         nodeId = `not_${this.notCount++}`;

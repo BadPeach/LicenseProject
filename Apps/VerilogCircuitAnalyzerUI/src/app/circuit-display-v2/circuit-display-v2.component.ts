@@ -113,7 +113,7 @@ export class CircuitDisplayV2Component implements OnInit {
     }
 
 
-    const {nodes, connectors} = this.circuitBuilder.buildCircuit(definition3);
+    const {nodes, connectors} = this.circuitBuilder.buildCircuit(definition2);
     this.nodes = nodes;
     this.connectors = connectors;
   }

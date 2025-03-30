@@ -16,9 +16,6 @@ namespace VerilogCircuitAnalyzerLib.Models
         public String ParserScriptErrors { get; set; }
         public JsonObject ParserScriptResponse { get; set; }
 
-        public String AnalyzerScriptOutput { get; set; }
-        public String AnalyzerScriptErrors { get; set; }
-        public JsonObject AnalyzerScriptResponse { get; set; }
 
     }
 }

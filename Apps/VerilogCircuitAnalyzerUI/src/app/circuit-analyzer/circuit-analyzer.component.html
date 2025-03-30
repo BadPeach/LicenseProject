@@ -116,28 +116,36 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
+
+
+  <div class="row">
+    <div class="col-md-6">
       <div *ngIf="parserResponse" class="panel panel-default response-tab mt-3 p-2">
         <div class="panel-heading d-flex justify-content-between align-items-center">
-          <button type="button" class="btn btn-outline-info" (click)="toggleParserResponseCollapse()">
+          <button type="button" class="btn btn-info" (click)="toggleParserResponseCollapse()">
             <i class="fa"
                [ngClass]="isParserResponseCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
             {{ isParserResponseCollapsed ? 'Show Parser Response' : 'Hide Parser Response' }}
           </button>
 
-          <button type="button" class="btn btn-warning" (click)="copyJson()">
+          <button type="button" class="btn btn-warning" (click)="copyJson(parserResponse)">
             <i class="fa fa-copy"></i>
             Copy JSON
           </button>
         </div>
         <div class="panel-body mt-2" [hidden]="isParserResponseCollapsed">
-          <ngx-json-viewer [json]="parserResponse" [expanded]="false"></ngx-json-viewer>
+          <ngx-json-viewer [json]="parserResponse" [depth]="3"></ngx-json-viewer>
         </div>
       </div>
 
+    </div>
+    <div class="col-md-6">
       <div *ngIf="parserResponse" class="panel panel-default response-tab mt-3 p-2">
         <div class="panel-heading d-flex justify-content-between align-items-center">
-          <button type="button" class="btn btn-outline-info" (click)="toggleDiagramViewerCollapse()">
+          <button type="button" class="btn btn-info" (click)="toggleDiagramViewerCollapse()">
             <i class="fa"
                [ngClass]="isDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
             {{ isDiagramViewerCollapsed ? 'Show Diagram' : 'Hide Diagram' }}
@@ -146,23 +154,17 @@
         </div>
         <div class="panel-body mt-2" [hidden]="isDiagramViewerCollapsed">
           <div class="control-section">
-            <div id="logicCircuit" style="width: 100%; height: 600px">
-              <div class="sb-mobile-palette-bar">
-                <div id="palette-icon" style="float: right;" role="button"  class="e-ddb-icons1 e-toggle-palette"></div>
-              </div>
-
-              <div id="diagram-space" class="sb-mobile-diagram">
-                <ejs-diagram #diagramParsed id="diagramParsed"
-                             width="100%" height="100%"
-                             [snapSettings]='snapSettings'
-                             [nodes]='nodes'
-                             [connectors]='connectors'
-                             [layout]="layout"
-                             [getConnectorDefaults]='getConnectorDefaults'
-                             [getNodeDefaults]='getNodeDefaults'
-                             (created)="diagramCreate($event)">
-                </ejs-diagram>
-              </div>
+            <div id="diagram-space"  style="width: 100%; height: 600px" class="">
+              <ejs-diagram #diagramParsed id="diagramParsed"
+                           width="100%" height="100%"
+                           [snapSettings]='snapSettings'
+                           [nodes]='nodes'
+                           [connectors]='connectors'
+                           [layout]="layout"
+                           [getConnectorDefaults]='getConnectorDefaults'
+                           [getNodeDefaults]='getNodeDefaults'
+                           (created)="diagramCreate($event)">
+              </ejs-diagram>
             </div>
           </div>
 
@@ -172,12 +174,130 @@
     </div>
   </div>
 
-  <br /><br />
+
+  <div *ngIf="parserResponse" class="container custom-form p-2 mt-3">
+    <form [formGroup]="gateForm" (ngSubmit)="onSubmitCircuitData()">
+      <div class="row">
+        <!-- Left Column: Gate Parameters Table -->
+        <div class="col-md-6">
+          <h3>Gate Parameters</h3>
+          <div formGroupName="gates" class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead class="thead-custom">
+              <tr>
+                <th>Gate</th>
+                <th>t₀ (Delay)</th>
+                <th>ΔT</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let gate of gates" [formGroupName]="gate">
+                <td>{{ gate }}</td>
+                <td>
+                  <input type="number" step="any" class="form-control" formControlName="t" placeholder="Delay">
+                  <div *ngIf="gateForm.get('gates')?.get(gate)?.get('t')?.touched && gateForm.get('gates')?.get(gate)?.get('t')?.invalid" class="text-danger">
+                    Please enter delay for {{ gate }}.
+                  </div>
+                </td>
+                <td>
+                  <input type="number" step="any" class="form-control" value="0.0" formControlName="delta_t" placeholder="ΔT">
+                  <div *ngIf="gateForm.get('gates')?.get(gate)?.get('delta_t')?.touched && gateForm.get('gates')?.get(gate)?.get('delta_t')?.invalid" class="text-danger">
+                    Please enter ΔT for {{ gate }}.
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column: Input Values Table -->
+        <div class="col-md-6">
+          <h3>Input Values</h3>
+          <div formGroupName="inputs" class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead class="thead-custom">
+              <tr>
+                <th>Gate</th>
+                <th>Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let input of inputs">
+                <td>Input {{ input }}</td>
+                <td>
+                  <select class="form-control" [formControlName]="'input_' + input">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                  </select>
+                  <!-- Display error if control is touched and invalid -->
+                  <div *ngIf="(gateForm.get('inputs')?.get('input_' + input)?.touched && gateForm.get('inputs')?.get('input_' + input)?.invalid)"
+                       class="text-danger">
+                    Please select a value for input {{ input }}.
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Overall Constraint Time -->
+          <div class="form-group">
+            <label class="fw-bold" for="total_time_constraint">Total Time Constraint</label>
+            <input type="number" step="any" class="form-control" id="total_time_constraint"
+                   formControlName="total_time_constraint" placeholder="Enter time">
+            <div *ngIf="(gateForm.get('total_time_constraint')?.touched && gateForm.get('total_time_constraint')?.invalid)"
+                 class="text-danger">
+              Please enter a total time constraint.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button class="btn btn-success" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+
 
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
+      <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-info" (click)="toggleAnalyzerResponseCollapse()">
+            <i class="fa"
+               [ngClass]="isAnalyzerResponseCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isAnalyzerResponseCollapsed ? 'Show Analyzer Response' : 'Hide Analyzer Response' }}
+          </button>
 
+          <button type="button" class="btn btn-warning" (click)="copyJson(analyzerResponse)">
+            <i class="fa fa-copy"></i>
+            Copy JSON
+          </button>
+        </div>
+        <div class="panel-body mt-2" [hidden]="isAnalyzerResponseCollapsed">
+          <ngx-json-viewer [json]="analyzerResponse" [depth]="3"></ngx-json-viewer>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-info" (click)="toggleOptimizedDiagramViewerCollapse()">
+            <i class="fa"
+               [ngClass]="isOptimizedDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isOptimizedDiagramViewerCollapsed ? 'Show Optimized Diagram' : 'Hide Optimized Diagram' }}
+          </button>
+
+        </div>
+        <div class="panel-body mt-2" [hidden]="isOptimizedDiagramViewerCollapsed">
+          <div class="control-section">
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
+
 </div>
 

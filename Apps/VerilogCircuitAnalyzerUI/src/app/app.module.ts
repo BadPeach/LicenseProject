@@ -13,6 +13,7 @@ import {DiagramModule, SymbolPaletteModule} from '@syncfusion/ej2-angular-diagra
 import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-v2.component';
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ClipboardModule} from '@angular/cdk/clipboard';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
     FileUploadModule,
     BrowserAnimationsModule,
     DiagramModule,
-    SymbolPaletteModule
+    SymbolPaletteModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

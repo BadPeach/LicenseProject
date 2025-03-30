@@ -9,6 +9,7 @@ import {
   SnapSettingsModel
 } from '@syncfusion/ej2-angular-diagrams';
 import {CircuitBuilderService} from '../services/circuit-builder.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-circuit-analyzer',
@@ -22,9 +23,13 @@ export class CircuitAnalyzerComponent {
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   parserResponse: {};
+  analyzerResponse: {};
+
+
 
   constructor (private clipboard: Clipboard,
-               private circuitBuilder: CircuitBuilderService) {
+               private circuitBuilder: CircuitBuilderService,
+               private fb: FormBuilder) {
     this.uploader = new FileUploader({
       url: this.backend_url,
       disableMultipart: false,
@@ -41,10 +46,18 @@ export class CircuitAnalyzerComponent {
     this.uploader.response.subscribe( res => {
       this.parserResponse = JSON.parse(res);
       // @ts-ignore
-      const {nodes, connectors} = this.circuitBuilder.buildCircuit(this.parserResponse["parserScriptResponse"]);
+      let parserScriptResponse = this.parserResponse["parserScriptResponse"];
+      const {nodes, connectors} = this.circuitBuilder.buildCircuit(parserScriptResponse);
       this.nodes = nodes;
       this.connectors = connectors;
+
+      //initialize form data
+      this.inputs = parserScriptResponse["inputs"];
+      this.gates = Object.keys(parserScriptResponse["gates"]);
+      this.initializeForm();
     } );
+
+
   }
 
   public fileOverBase(e:any):void {
@@ -72,8 +85,18 @@ export class CircuitAnalyzerComponent {
     this.isDiagramViewerCollapsed = !this.isDiagramViewerCollapsed;
   }
 
-  copyJson(): void {
-    const jsonString = JSON.stringify(this.parserResponse, null, 2);
+  isAnalyzerResponseCollapsed = true;
+  toggleAnalyzerResponseCollapse(): void {
+    this.isAnalyzerResponseCollapsed = !this.isAnalyzerResponseCollapsed;
+  }
+
+  isOptimizedDiagramViewerCollapsed = true;
+  toggleOptimizedDiagramViewerCollapse(): void {
+    this.isOptimizedDiagramViewerCollapsed = !this.isOptimizedDiagramViewerCollapsed;
+  }
+
+  copyJson(targetObj: any): void {
+    const jsonString = JSON.stringify(targetObj, null, 2);
     this.clipboard.copy(jsonString);
     console.log('JSON copied to clipboard!');
   }
@@ -111,5 +134,44 @@ export class CircuitAnalyzerComponent {
 
   public diagramCreate(args: Object): void {
     this.diagram.fitToPage();
+  }
+
+  /* Form for circuit analysis  */
+
+  gateForm: FormGroup;
+  gates: string[];
+  inputs: string[];
+
+  initializeForm(): void {
+    // Create the main form group with nested groups for gates and inputs
+    this.gateForm = this.fb.group({
+      gates: this.fb.group({}),
+      inputs: this.fb.group({}),
+      total_time_constraint: ['', Validators.required]
+    });
+
+    // Create a nested FormGroup for each gate
+    const gatesGroup = this.gateForm.get('gates') as FormGroup;
+    this.gates.forEach(gate => {
+      const gateGroup = this.fb.group({
+        t: ['', Validators.required],
+        delta_t: [0.0, Validators.required]
+      });
+      gatesGroup.addControl(gate, gateGroup);
+    });
+
+    // Create dynamic controls for each input value
+    this.inputs.forEach(input => {
+      const inputsGroup = this.gateForm.get('inputs') as FormGroup;
+      inputsGroup.addControl(`input_${input}`, this.fb.control(0, Validators.required));
+    });
+  }
+
+  onSubmitCircuitData(): void {
+    if (this.gateForm.invalid) {
+      this.gateForm.markAllAsTouched();
+      return;
+    }
+    console.log(this.gateForm.value);
   }
 }

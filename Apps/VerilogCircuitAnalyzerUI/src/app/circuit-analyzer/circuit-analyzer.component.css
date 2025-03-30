@@ -81,3 +81,14 @@
 .e-toggle-palette::before {
   content: "\e700"
 }
+
+.custom-form {
+  border-radius: 2px;
+  border: 1px solid #000000;
+}
+
+
+thead.thead-custom th {
+  background-color: #184675 !important;
+  color: white !important;
+}
