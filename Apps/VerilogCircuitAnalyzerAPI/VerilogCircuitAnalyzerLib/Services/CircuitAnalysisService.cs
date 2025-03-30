@@ -23,7 +23,7 @@ namespace VerilogCircuitAnalyzerLib.Services
             var (fileName, filePath) = SaveUploadedFile(file);
 
             var (outputFile1, output1, errors1) = RunPythonScript(scriptType: ScriptType.PARSER, inputFilePath: filePath);
-            var (outputFile2, output2, errors2) = RunPythonScript(scriptType: ScriptType.ANALYZER, inputFilePath: outputFile1);
+           // var (outputFile2, output2, errors2) = RunPythonScript(scriptType: ScriptType.ANALYZER, inputFilePath: outputFile1);
 
             return new CircuitAnalysisResponse()
             {
@@ -32,9 +32,6 @@ namespace VerilogCircuitAnalyzerLib.Services
                 ParserScriptErrors = errors1,
                 ParserScriptOutput = output1,
                 ParserScriptResponse = ReadJsonFromFile(outputFile1),
-                AnalyzerScriptErrors = errors2,
-                AnalyzerScriptOutput = output2,
-                AnalyzerScriptResponse = ReadJsonFromFile(outputFile2)
             };
         }
 

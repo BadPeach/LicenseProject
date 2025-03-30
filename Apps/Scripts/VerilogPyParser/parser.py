@@ -45,32 +45,34 @@ def convert_expr(node, assignment_map):
             return node.name
     elif node_type == "IntConst":
         return node.value
-    elif node_type == "UnaryOperator":
-        op = node.operator
+    elif node_type in ["UnaryOperator", "Unot"]:
+        # Tratăm operatorii unari; pentru "Unot" (sau cazul în care operatorul este '~')
         operand = convert_expr(node.right, assignment_map)
-        if op == '~':
-            return {"not": operand}
+        return {"not": operand}
+    elif node_type in ["Operator", "BinaryOperator", "And", "Or", "Xor", "Nand", "Nor", "Xnor"]:
+        # Dacă nodul are un tip care reprezintă direct operatorul (ex. "And", "Or", etc.)
+        if node_type in ["And", "Or", "Xor", "Nand", "Nor", "Xnor"]:
+            op = node_type.lower()  # "And" -> "and", etc.
         else:
-            return {op: operand}
-    elif node_type in ["Operator", "BinaryOperator"]:
-        op = node.operator
+            # Pentru cazurile în care avem un operator simbolic
+            op = node.operator
+            if op == '&':
+                op = "and"
+            elif op == '|':
+                op = "or"
+            elif op == '^':
+                op = "xor"
         left_expr = convert_expr(node.left, assignment_map)
         right_expr = convert_expr(node.right, assignment_map)
-        if op == '&':
-            return {"and": [left_expr, right_expr]}
-        elif op == '|':
-            return {"or": [left_expr, right_expr]}
-        elif op == '^':
-            return {"xor": [left_expr, right_expr]}
-        else:
-            return {op: [left_expr, right_expr]}
+        return {op: [left_expr, right_expr]}
     else:
-        # Fără conversii la string – se procesează toți copii ca subnoduri.
+        # Pentru orice alt tip de nod, procesăm recursiv copiii.
         children = list(node.children())
         if children:
             return {node_type: [convert_expr(child, assignment_map) for child in children]}
         else:
             return node_type
+
 
 
 def simplify_expr(expr):
@@ -105,6 +107,30 @@ def simplify_expr(expr):
         return expr
 
 
+
+def collect_gates(expr):
+    gate_counts = {}
+    if isinstance(expr, dict):
+        for key, value in expr.items():
+            if key.lower() in {"and", "or", "not", "xor", "nand", "nor", "xnor"}:
+                gate_counts[key] = gate_counts.get(key, 0) + 1
+            if isinstance(value, list):
+                for item in value:
+                    child_counts = collect_gates(item)
+                    for k, v in child_counts.items():
+                        gate_counts[k] = gate_counts.get(k, 0) + v
+            elif isinstance(value, dict):
+                child_counts = collect_gates(value)
+                for k, v in child_counts.items():
+                    gate_counts[k] = gate_counts.get(k, 0) + v
+    elif isinstance(expr, list):
+        for item in expr:
+            child_counts = collect_gates(item)
+            for k, v in child_counts.items():
+                gate_counts[k] = gate_counts.get(k, 0) + v
+    return gate_counts
+
+
 def parse_verilog_file(filename):
     """
     Parcurge fișierul Verilog, construiește o hartă a atribuțiilor și
@@ -120,6 +146,7 @@ def parse_verilog_file(filename):
     inputs = []
     outputs = []
     assignments = []  # Lista de tuple: (stânga, dreapta)
+    gates = set()
 
     for item in module_def.items:
         if item.__class__.__name__ == 'Decl':
@@ -140,16 +167,21 @@ def parse_verilog_file(filename):
 
     # Pentru fiecare ieșire, extindem recursiv definițiile semnalelor intermediare.
     expression_tree = {}
+    if len(outputs) != 1:
+        raise Exception("Expected only 1 output")
     for out in outputs:
         if out in assignment_map:
-            expr_tree = convert_expr(assignment_map[out], assignment_map)
-            expr_tree = simplify_expr(expr_tree)
-            expression_tree[out] = expr_tree
+            expression_tree = convert_expr(assignment_map[out], assignment_map)
+            # expression_tree = simplify_expr(expression_tree)
+
+    # Colectăm gate-urile din arborele expresiilor pentru toate ieșirile.
+    total_gate_counts = collect_gates(expression_tree)
 
     return {
         "module": module_name,
         "inputs": inputs,
         "outputs": outputs,
+        "gates": total_gate_counts,
         "expression_tree": expression_tree
     }
 
