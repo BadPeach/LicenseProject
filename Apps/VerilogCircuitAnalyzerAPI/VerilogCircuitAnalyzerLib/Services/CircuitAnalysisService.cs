@@ -18,20 +18,33 @@ namespace VerilogCircuitAnalyzerLib.Services
             return "Hello from CircuitAnalysisService";
         }
 
-        public CircuitAnalysisResponse ProcessVerilogFile(IFormFile file)
+        public CircuitASTResponse ProcessVerilogFile(IFormFile file)
         {
             var (fileName, filePath) = SaveUploadedFile(file);
 
             var (outputFile1, output1, errors1) = RunPythonScript(scriptType: ScriptType.PARSER, inputFilePath: filePath);
            // var (outputFile2, output2, errors2) = RunPythonScript(scriptType: ScriptType.ANALYZER, inputFilePath: outputFile1);
 
-            return new CircuitAnalysisResponse()
+            return new CircuitASTResponse()
             {
                 InputFileName = fileName,
                 InputFilePath = filePath,
                 ParserScriptErrors = errors1,
                 ParserScriptOutput = output1,
                 ParserScriptResponse = ReadJsonFromFile(outputFile1),
+            };
+        }
+
+        public CircuitAnalysisResponse AnalyzeCircuit(CircuitAnalysisRequest request)
+        {
+            return new CircuitAnalysisResponse
+            {
+                TotalDelay = 0.0,
+                SatisfyTimeConstraint = true,
+                Output = 0,
+
+                OptimizedTotalDelay = 0.0,
+                OptimizedCircuit = new JsonObject()
             };
         }
 

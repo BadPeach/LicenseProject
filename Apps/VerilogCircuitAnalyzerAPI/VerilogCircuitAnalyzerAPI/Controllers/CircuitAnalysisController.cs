@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using VerilogCircuitAnalyzerLib.Services;
 using System;
 using System.IO;
+using VerilogCircuitAnalyzerLib.Models;
 
 namespace VerilogCircuitAnalyzerAPI.Controllers
 {
@@ -30,6 +31,21 @@ namespace VerilogCircuitAnalyzerAPI.Controllers
             try
             {
                 var result = _circuitAnalysisService.ProcessVerilogFile(file);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading file");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("analyzeCircuit")]
+        public IActionResult AnalyzeFile([FromBody] CircuitAnalysisRequest request)
+        {
+            try
+            {
+                var result = _circuitAnalysisService.AnalyzeCircuit(request);
                 return Ok(result);
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
 import {Clipboard} from '@angular/cdk/clipboard';
+import {HttpClient} from '@angular/common/http';
 import {
   ConnectorModel,
   DiagramComponent, LayoutModel,
@@ -10,6 +11,8 @@ import {
 } from '@syncfusion/ej2-angular-diagrams';
 import {CircuitBuilderService} from '../services/circuit-builder.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {CircuitAnalysisApiService} from '../services/circuit-analysis-api.service';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-circuit-analyzer',
@@ -19,19 +22,18 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 })
 export class CircuitAnalyzerComponent {
-  backend_url: string = 'http://localhost:5283/api/CircuitAnalysis/processVerilogFile';
   uploader:FileUploader;
   hasBaseDropZoneOver:boolean;
   parserResponse: {};
   analyzerResponse: {};
-
-
+  private http: any;
 
   constructor (private clipboard: Clipboard,
                private circuitBuilder: CircuitBuilderService,
-               private fb: FormBuilder) {
+               private fb: FormBuilder,
+               private circuitAnalysisApiService: CircuitAnalysisApiService) {
     this.uploader = new FileUploader({
-      url: this.backend_url,
+      url: `${this.circuitAnalysisApiService.circuitAnalysisAPI}/processVerilogFile`,
       disableMultipart: false,
       autoUpload: false,
     });
@@ -145,25 +147,25 @@ export class CircuitAnalyzerComponent {
   initializeForm(): void {
     // Create the main form group with nested groups for gates and inputs
     this.gateForm = this.fb.group({
-      gates: this.fb.group({}),
-      inputs: this.fb.group({}),
-      total_time_constraint: ['', Validators.required]
+      GateDelays: this.fb.group({}),
+      Inputs: this.fb.group({}),
+      TimeConstraint: ['', Validators.required]
     });
 
     // Create a nested FormGroup for each gate
-    const gatesGroup = this.gateForm.get('gates') as FormGroup;
+    const gatesGroup = this.gateForm.get('GateDelays') as FormGroup;
     this.gates.forEach(gate => {
       const gateGroup = this.fb.group({
-        t: ['', Validators.required],
-        delta_t: [0.0, Validators.required]
+        t0: ['', Validators.required],
+        deltaT: [0.0, Validators.required]
       });
       gatesGroup.addControl(gate, gateGroup);
     });
 
     // Create dynamic controls for each input value
     this.inputs.forEach(input => {
-      const inputsGroup = this.gateForm.get('inputs') as FormGroup;
-      inputsGroup.addControl(`input_${input}`, this.fb.control(0, Validators.required));
+      const inputsGroup = this.gateForm.get('Inputs') as FormGroup;
+      inputsGroup.addControl(`${input}`, this.fb.control(0, Validators.required));
     });
   }
 
@@ -172,6 +174,17 @@ export class CircuitAnalyzerComponent {
       this.gateForm.markAllAsTouched();
       return;
     }
-    console.log(this.gateForm.value);
+    let analyzerRequest = this.gateForm.value;
+    // @ts-ignore
+    analyzerRequest["ASTCircuit"] = this.parserResponse["parserScriptResponse"]["expression_tree"]
+    console.log('Request payload:', analyzerRequest);
+    firstValueFrom(this.circuitAnalysisApiService.analyzeCircuit(analyzerRequest))
+      .then((response: any) => {
+        console.log('Response from server:', response);
+        this.analyzerResponse = response;
+      })
+      .catch((error: any) => {
+        console.error('Error occurred while analyzing the circuit:', error);
+      });
   }
 }

@@ -181,7 +181,7 @@
         <!-- Left Column: Gate Parameters Table -->
         <div class="col-md-6">
           <h3>Gate Parameters</h3>
-          <div formGroupName="gates" class="table-responsive">
+          <div formGroupName="GateDelays" class="table-responsive">
             <table class="table table-striped table-bordered">
               <thead class="thead-custom">
               <tr>
@@ -194,14 +194,14 @@
               <tr *ngFor="let gate of gates" [formGroupName]="gate">
                 <td>{{ gate }}</td>
                 <td>
-                  <input type="number" step="any" class="form-control" formControlName="t" placeholder="Delay">
-                  <div *ngIf="gateForm.get('gates')?.get(gate)?.get('t')?.touched && gateForm.get('gates')?.get(gate)?.get('t')?.invalid" class="text-danger">
+                  <input type="number" step="any" class="form-control" formControlName="t0" placeholder="Delay">
+                  <div *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('t0')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('t0')?.invalid" class="text-danger">
                     Please enter delay for {{ gate }}.
                   </div>
                 </td>
                 <td>
-                  <input type="number" step="any" class="form-control" value="0.0" formControlName="delta_t" placeholder="ΔT">
-                  <div *ngIf="gateForm.get('gates')?.get(gate)?.get('delta_t')?.touched && gateForm.get('gates')?.get(gate)?.get('delta_t')?.invalid" class="text-danger">
+                  <input type="number" step="any" class="form-control" value="0.0" formControlName="deltaT" placeholder="ΔT">
+                  <div *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.invalid" class="text-danger">
                     Please enter ΔT for {{ gate }}.
                   </div>
                 </td>
@@ -214,7 +214,7 @@
         <!-- Right Column: Input Values Table -->
         <div class="col-md-6">
           <h3>Input Values</h3>
-          <div formGroupName="inputs" class="table-responsive">
+          <div formGroupName="Inputs" class="table-responsive">
             <table class="table table-striped table-bordered">
               <thead class="thead-custom">
               <tr>
@@ -226,12 +226,12 @@
               <tr *ngFor="let input of inputs">
                 <td>Input {{ input }}</td>
                 <td>
-                  <select class="form-control" [formControlName]="'input_' + input">
+                  <select class="form-control" [formControlName]="input">
                     <option value="0">0</option>
                     <option value="1">1</option>
                   </select>
                   <!-- Display error if control is touched and invalid -->
-                  <div *ngIf="(gateForm.get('inputs')?.get('input_' + input)?.touched && gateForm.get('inputs')?.get('input_' + input)?.invalid)"
+                  <div *ngIf="(gateForm.get('Inputs')?.get(input)?.touched && gateForm.get('Inputs')?.get(input)?.invalid)"
                        class="text-danger">
                     Please select a value for input {{ input }}.
                   </div>
@@ -242,10 +242,10 @@
           </div>
           <!-- Overall Constraint Time -->
           <div class="form-group">
-            <label class="fw-bold" for="total_time_constraint">Total Time Constraint</label>
-            <input type="number" step="any" class="form-control" id="total_time_constraint"
-                   formControlName="total_time_constraint" placeholder="Enter time">
-            <div *ngIf="(gateForm.get('total_time_constraint')?.touched && gateForm.get('total_time_constraint')?.invalid)"
+            <label class="fw-bold" for="TimeConstraint">Total Time Constraint</label>
+            <input type="number" step="any" class="form-control" id="TimeConstraint"
+                   formControlName="TimeConstraint" placeholder="Enter time">
+            <div *ngIf="(gateForm.get('TimeConstraint')?.touched && gateForm.get('TimeConstraint')?.invalid)"
                  class="text-danger">
               Please enter a total time constraint.
             </div>

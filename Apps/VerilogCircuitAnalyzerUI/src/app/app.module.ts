@@ -14,6 +14,7 @@ import { CircuitDisplayV2Component } from './circuit-display-v2/circuit-display-
 import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,9 @@ import {ReactiveFormsModule} from '@angular/forms';
     BrowserAnimationsModule,
     DiagramModule,
     SymbolPaletteModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
