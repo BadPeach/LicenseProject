@@ -374,7 +374,7 @@ MigrationBackup/
 Uploads/
 ParserOutput/
 AnalyzerOutput/
-
+Temp/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/

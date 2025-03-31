@@ -15,6 +15,11 @@ builder.Services.AddCors(options =>
                         .AllowCredentials());
 });
 
+builder.Services.AddControllers().AddJsonOptions(opts =>
+{
+    opts.JsonSerializerOptions.MaxDepth = 128;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,6 +36,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors("AllowAngularApp");
+
 
 
 app.Run();

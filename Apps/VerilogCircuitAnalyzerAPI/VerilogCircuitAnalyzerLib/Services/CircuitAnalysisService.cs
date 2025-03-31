@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using VerilogCircuitAnalyzerLib.Models;
 
@@ -8,6 +9,8 @@ namespace VerilogCircuitAnalyzerLib.Services
 {
     public class CircuitAnalysisService
     {
+
+        private string baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Temp");
         enum ScriptType {
             PARSER,
             ANALYZER
@@ -20,35 +23,29 @@ namespace VerilogCircuitAnalyzerLib.Services
 
         public CircuitASTResponse ProcessVerilogFile(IFormFile file)
         {
-            var (fileName, filePath) = SaveUploadedFile(file);
+            var (fileName, filePath) = SaveParserRequestToFile(file);
 
-            var (outputFile1, output1, errors1) = RunPythonScript(scriptType: ScriptType.PARSER, inputFilePath: filePath);
-           // var (outputFile2, output2, errors2) = RunPythonScript(scriptType: ScriptType.ANALYZER, inputFilePath: outputFile1);
+            var (outputFile, output, errors) = RunPythonScript(scriptType: ScriptType.PARSER, inputFilePath: filePath);
 
             return new CircuitASTResponse()
             {
                 InputFileName = fileName,
                 InputFilePath = filePath,
-                ParserScriptErrors = errors1,
-                ParserScriptOutput = output1,
-                ParserScriptResponse = ReadJsonFromFile(outputFile1),
+                ParserScriptErrors = errors,
+                ParserScriptOutput = output,
+                ParserScriptResponse = ReadJsonFromFile(outputFile),
             };
         }
 
         public CircuitAnalysisResponse AnalyzeCircuit(CircuitAnalysisRequest request)
         {
-            return new CircuitAnalysisResponse
-            {
-                TotalDelay = 0.0,
-                SatisfyTimeConstraint = true,
-                Output = 0,
-
-                OptimizedTotalDelay = 0.0,
-                OptimizedCircuit = new JsonObject()
-            };
+            var (fileName, filePath) = SaveAnalyzerRequestToFile(request);
+            var (outputFile, output, errors) = RunPythonScript(scriptType: ScriptType.ANALYZER, inputFilePath: filePath);
+            string jsonData = File.ReadAllText(outputFile);
+            return JsonSerializer.Deserialize<CircuitAnalysisResponse>(jsonData);
         }
 
-        private (string fileName, string filePath) SaveUploadedFile(IFormFile file)
+        private (string fileName, string filePath) SaveParserRequestToFile(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -58,7 +55,7 @@ namespace VerilogCircuitAnalyzerLib.Services
             string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
             string fileName = $"{timestamp}_{Path.GetFileName(file.FileName)}";
 
-            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            string uploadFolder = Path.Combine(baseDirectory, "ParserScriptUploads");
             if (!Directory.Exists(uploadFolder))
             {
                 Directory.CreateDirectory(uploadFolder);
@@ -70,6 +67,24 @@ namespace VerilogCircuitAnalyzerLib.Services
                 file.CopyTo(stream);
             }
             
+            return (fileName, filePath);
+        }
+
+        private (string fileName, string filePath) SaveAnalyzerRequestToFile(CircuitAnalysisRequest request)
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+            string fileName = $"{timestamp}_input.json";
+
+            string uploadFolder = Path.Combine(baseDirectory, "AnalyzerScriptUploads");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            string filePath = Path.Combine(uploadFolder, fileName);
+            string jsonData = JsonSerializer.Serialize(request);
+            File.WriteAllText(filePath, jsonData);
+
             return (fileName, filePath);
         }
 
@@ -124,7 +139,7 @@ namespace VerilogCircuitAnalyzerLib.Services
             return (outputFilePath, output, errors);
         }
 
-        private static string GetOutputFilePath(string inputFilePath, string outputFolderName, string outputExtension = ".json")
+        private static string GetOutputFilePath(string inputFilePath, string outputFolderName, string outputExtension = ".out.json")
         {
             var parentDir = Directory.GetParent(Path.GetDirectoryName(inputFilePath)).FullName;
             var outputDir = Path.Combine(parentDir, outputFolderName);

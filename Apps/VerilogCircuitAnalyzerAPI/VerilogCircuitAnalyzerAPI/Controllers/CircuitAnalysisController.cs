@@ -12,6 +12,7 @@ namespace VerilogCircuitAnalyzerAPI.Controllers
     public class CircuitAnalysisController : ControllerBase
     {
         private readonly ILogger<CircuitAnalysisController> _logger;
+
         private readonly CircuitAnalysisService _circuitAnalysisService = new CircuitAnalysisService();
 
         public CircuitAnalysisController(ILogger<CircuitAnalysisController> logger)

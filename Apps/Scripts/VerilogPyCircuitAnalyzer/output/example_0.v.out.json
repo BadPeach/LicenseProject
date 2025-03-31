@@ -1,0 +1,9 @@
+{
+  "TotalDelay": 5.2,
+  "Output": true,
+  "SatisfyTimeConstraint": false,
+  "OptimizedCircuit": {
+    "dummy": "test"
+  },
+  "OptimizedTotalDelay": 0
+}
