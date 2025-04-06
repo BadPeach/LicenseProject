@@ -1,0 +1,40 @@
+{
+  "TotalDelay": 50.0,
+  "Output": 0,
+  "SatisfyTimeConstraint": false,
+  "OptimizedCircuit": {
+    "and": [
+      {
+        "not": "N"
+      },
+      {
+        "or": [
+          "O15",
+          "O14",
+          "O13",
+          "O12",
+          "O11",
+          "O10",
+          "O9",
+          "O8",
+          "O7",
+          "O6",
+          "O5",
+          "O4",
+          "O3",
+          "O1",
+          "O2"
+        ]
+      },
+      "A8",
+      "A7",
+      "A6",
+      "A5",
+      "A4",
+      "A3",
+      "A1",
+      "A2"
+    ]
+  },
+  "OptimizedTotalDelay": 28.0
+}

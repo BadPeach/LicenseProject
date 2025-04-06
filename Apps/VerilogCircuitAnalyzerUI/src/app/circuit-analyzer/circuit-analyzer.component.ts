@@ -9,7 +9,7 @@ import {
   SnapConstraints,
   SnapSettingsModel
 } from '@syncfusion/ej2-angular-diagrams';
-import {CircuitBuilderService} from '../services/circuit-builder.service';
+import {CircuitBuilderService, Expression} from '../services/circuit-builder.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CircuitAnalysisApiService} from '../services/circuit-analysis-api.service';
 import {firstValueFrom} from 'rxjs';
@@ -109,9 +109,14 @@ export class CircuitAnalyzerComponent {
    */
   @ViewChild('diagramParsed')
   public diagram: DiagramComponent;
-
   public nodes: NodeModel[] = [];
   public connectors: ConnectorModel[] = [];
+
+  @ViewChild('diagramParsedOptimized')
+  public diagramParsedOptimized: DiagramComponent;
+  public nodesOptimized: NodeModel[] = [];
+  public connectorsOptimized: ConnectorModel[] = [];
+
 
   public snapSettings: SnapSettingsModel = {
     constraints: SnapConstraints.All & ~SnapConstraints.ShowLines | SnapConstraints.SnapToLines
@@ -137,6 +142,10 @@ export class CircuitAnalyzerComponent {
 
   public diagramCreate(args: Object): void {
     this.diagram.fitToPage();
+  }
+
+  public optimizedDiagramCreate(args: Object): void {
+    this.diagramParsedOptimized.fitToPage();
   }
 
   /* Form for circuit analysis  */
@@ -183,6 +192,21 @@ export class CircuitAnalyzerComponent {
       .then((response: any) => {
         console.log('Response from server:', response);
         this.analyzerResponse = response;
+
+
+        let circuitDefinition = {
+          // @ts-ignore
+          inputs: this.parserResponse["parserScriptResponse"]["inputs"],
+          // @ts-ignore
+          outputs: this.parserResponse["parserScriptResponse"]["outputs"],
+          // @ts-ignore
+          gates: this.parserResponse["parserScriptResponse"]["gates"],
+          // @ts-ignore
+          expression_tree: this.analyzerResponse["optimizedCircuit"],
+        };
+        const {nodes, connectors} = this.circuitBuilder.buildCircuit(circuitDefinition);
+        this.nodesOptimized = nodes;
+        this.connectorsOptimized = connectors;
       })
       .catch((error: any) => {
         console.error('Error occurred while analyzing the circuit:', error);

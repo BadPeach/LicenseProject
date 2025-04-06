@@ -1,9 +1,12 @@
 import json
 import sys
-from functools import reduce
+from copy import deepcopy
 
 
 class ASTNode:
+    def __init__(self, name):
+        self.name = name
+
     def get_delay(self):
         """Returnează delay-ul total al nodului (delay-ul propriu + maximul din subnoduri)."""
         raise NotImplementedError
@@ -20,9 +23,15 @@ class ASTNode:
         """Evaluează circuitul și returnează rezultatul (True/False)."""
         raise NotImplementedError
 
+    def aggregate(self):
+        raise NotImplementedError
+
+    def to_dict(self):
+        raise NotImplementedError
+
 class InputNode(ASTNode):
     def __init__(self, name):
-        self.name = name
+        super().__init__(name)
         self.value = None
 
     def get_delay(self):
@@ -37,6 +46,9 @@ class InputNode(ASTNode):
     def set_delay_values(self, values: dict):
         return
 
+    def aggregate(self):
+        return
+
     def evaluate(self):
         if self.value is None:
             raise ValueError(f"Valoarea pentru {self.name} nu a fost inițializată.")
@@ -45,13 +57,29 @@ class InputNode(ASTNode):
     def __repr__(self):
         return f"InputNode({self.name}={self.value})"
 
+    def to_dict(self):
+        return self.name
+
 # Nod de bază pentru o poartă (gate)
 class GateNode(ASTNode):
     def __init__(self, name):
-        self.name = name
+        super().__init__(name)
         self.children = []
         self.delay_t0 = None
         self.delay_deltaT = None
+
+    def aggregate(self):
+        for child in self.children:
+            child.aggregate()
+
+        grandchildren_to_inherit = [
+            grandchild
+            for child in self.children if child.name == self.name
+            for grandchild in child.children
+        ]
+        self.children = [child for child in self.children if child.name != self.name]
+        self.children.extend(grandchildren_to_inherit)
+
 
     def add_child(self, child: ASTNode):
         self.children.append(child)
@@ -75,12 +103,15 @@ class GateNode(ASTNode):
             raise Exception("Gate node does not have any children.")
         return self.delay_t0 + self.delay_deltaT * (len(self.children) - 1) + max(child.get_delay() for child in self.children)
 
-    def __repr__(self):
+    def __str__(self):
         return f"{self.__class__.__name__}(name={self.delay_t0}, delay_t0={self.delay_t0}, delay_deltaT={self.delay_deltaT}, children={self.children})"
 
+    def to_dict(self):
+        return {self.name: [child.to_dict() for child in self.children]}
+
 class AndGate(GateNode):
-    def __init__(self, delay_dict):
-        super().__init__(delay_dict)
+    def __init__(self, name):
+        super().__init__(name)
 
     def evaluate(self):
         result = True
@@ -89,8 +120,8 @@ class AndGate(GateNode):
         return result
 
 class OrGate(GateNode):
-    def __init__(self, delay_dict):
-        super().__init__(delay_dict)
+    def __init__(self, name):
+        super().__init__(name)
 
     def evaluate(self):
         result = False
@@ -99,17 +130,23 @@ class OrGate(GateNode):
         return result
 
 class NotGate(GateNode):
-    def __init__(self, delay_dict):
-        super().__init__(delay_dict)
+    def __init__(self, name):
+        super().__init__(name)
 
     def evaluate(self):
         if len(self.children) != 1:
             raise ValueError("NotGate trebuie să aibă exact un operand.")
         return not self.children[0].evaluate()
 
+    def aggregate(self):
+        self.children[0].aggregate()
+
+    def to_dict(self):
+        return {self.name: self.children[0].to_dict()}
+
 class XorGate(GateNode):
-    def __init__(self, delay_dict):
-        super().__init__(delay_dict)
+    def __init__(self, name):
+        super().__init__(name)
 
     def evaluate(self):
         if len(self.children) != 2:
@@ -165,12 +202,17 @@ if __name__ == '__main__':
     myCircuit.set_delay_values(data["GateDelays"])
 
     total_delay = myCircuit.get_delay()
+
+    aggregated_circuit = deepcopy(myCircuit)
+    aggregated_circuit.aggregate()
+    aggregated_circuit_total_delay = aggregated_circuit.get_delay()
+
     result = {
         "TotalDelay": total_delay,
         "Output": int(myCircuit.evaluate()),
         "SatisfyTimeConstraint": total_delay <= data["TimeConstraint"],
-        "OptimizedCircuit": {"dummy": "test"},
-        "OptimizedTotalDelay": 0
+        "OptimizedCircuit": aggregated_circuit.to_dict(),
+        "OptimizedTotalDelay": aggregated_circuit_total_delay
     }
     with open(output_filename, 'w') as outfile:
         json.dump(result, outfile, indent=2)
