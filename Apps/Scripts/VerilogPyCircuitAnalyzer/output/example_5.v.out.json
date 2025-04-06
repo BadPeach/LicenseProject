@@ -1,0 +1,105 @@
+{
+  "Result": {
+    "OriginalCircuit": {
+      "TotalDelay": 21.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "and": [
+              {
+                "and": [
+                  {
+                    "and": [
+                      {
+                        "and": [
+                          {
+                            "and": [
+                              {
+                                "and": [
+                                  "A1",
+                                  "A2"
+                                ]
+                              },
+                              "A3"
+                            ]
+                          },
+                          "A4"
+                        ]
+                      },
+                      "A5"
+                    ]
+                  },
+                  "A6"
+                ]
+              },
+              "A7"
+            ]
+          },
+          "A8"
+        ]
+      }
+    },
+    "AggregatedTreeCircuit": {
+      "TotalDelay": 9.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          "A8",
+          "A7",
+          "A6",
+          "A5",
+          "A4",
+          "A3",
+          "A1",
+          "A2"
+        ]
+      }
+    },
+    "BalancedTreeCircuit": {
+      "TotalDelay": 9.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          {
+            "and": [
+              {
+                "and": [
+                  "A8",
+                  "A7"
+                ]
+              },
+              {
+                "and": [
+                  "A6",
+                  "A5"
+                ]
+              }
+            ]
+          },
+          {
+            "and": [
+              {
+                "and": [
+                  "A4",
+                  "A3"
+                ]
+              },
+              {
+                "and": [
+                  "A1",
+                  "A2"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "OptimizedCircuitType": "Aggregated Tree Circuit",
+  "OptimizedTotalDelay": 9.0
+}

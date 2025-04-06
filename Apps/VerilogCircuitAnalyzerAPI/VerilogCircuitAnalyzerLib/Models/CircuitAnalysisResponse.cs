@@ -4,12 +4,8 @@ namespace VerilogCircuitAnalyzerLib.Models
 {
     public class CircuitAnalysisResponse
     {
-        public double TotalDelay { get; set; }
-        public int Output { get; set; }
-        public bool SatisfyTimeConstraint { get; set; }
-
-
-        public JsonObject OptimizedCircuit { get; set; }
+        public Dictionary<String, CircuitTypeData> Options { get; set; }
+        public string OptimizedCircuitType { get; set; }
         public double OptimizedTotalDelay { get; set; }
     }
 }

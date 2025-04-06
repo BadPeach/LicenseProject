@@ -26,6 +26,9 @@ class ASTNode:
     def aggregate(self):
         raise NotImplementedError
 
+    def balance_tree(self):
+        raise NotImplementedError
+
     def to_dict(self):
         raise NotImplementedError
 
@@ -49,6 +52,9 @@ class InputNode(ASTNode):
     def aggregate(self):
         return
 
+    def balance_tree(self):
+        return
+
     def evaluate(self):
         if self.value is None:
             raise ValueError(f"Valoarea pentru {self.name} nu a fost inițializată.")
@@ -62,11 +68,11 @@ class InputNode(ASTNode):
 
 # Nod de bază pentru o poartă (gate)
 class GateNode(ASTNode):
-    def __init__(self, name):
+    def __init__(self, name, delay_t0=None, delay_deltaT=None):
         super().__init__(name)
         self.children = []
-        self.delay_t0 = None
-        self.delay_deltaT = None
+        self.delay_t0 = delay_t0
+        self.delay_deltaT = delay_deltaT
 
     def aggregate(self):
         for child in self.children:
@@ -79,6 +85,35 @@ class GateNode(ASTNode):
         ]
         self.children = [child for child in self.children if child.name != self.name]
         self.children.extend(grandchildren_to_inherit)
+
+    def balance_tree(self):
+        for child in self.children:
+            child.balance_tree()
+
+        total_children_count = len(self.children)
+        if total_children_count <= 3:
+            return
+
+        new_children = []
+        processed_children_count = 0
+        while processed_children_count < total_children_count:
+            if (total_children_count - processed_children_count) == 3:
+                group = self.children[processed_children_count:processed_children_count + 3]
+                processed_children_count += 3
+            else:
+                group = self.children[processed_children_count:processed_children_count + 2]
+                processed_children_count += 2
+
+            if len(group) == 1:
+                new_children.append(group[0])
+            else:
+                new_gate = type(self)(self.name, self.delay_t0, self.delay_deltaT)
+                new_gate.children = group
+                new_children.append(new_gate)
+
+        self.children = new_children
+        if len(self.children) > 3:
+            self.balance_tree()
 
 
     def add_child(self, child: ASTNode):
@@ -110,8 +145,8 @@ class GateNode(ASTNode):
         return {self.name: [child.to_dict() for child in self.children]}
 
 class AndGate(GateNode):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, delay_t0=None, delay_deltaT=None):
+        super().__init__(name, delay_t0, delay_deltaT)
 
     def evaluate(self):
         result = True
@@ -120,8 +155,8 @@ class AndGate(GateNode):
         return result
 
 class OrGate(GateNode):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, delay_t0=None, delay_deltaT=None):
+        super().__init__(name, delay_t0, delay_deltaT)
 
     def evaluate(self):
         result = False
@@ -130,8 +165,8 @@ class OrGate(GateNode):
         return result
 
 class NotGate(GateNode):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, delay_t0=None, delay_deltaT=None):
+        super().__init__(name, delay_t0, delay_deltaT)
 
     def evaluate(self):
         if len(self.children) != 1:
@@ -141,12 +176,15 @@ class NotGate(GateNode):
     def aggregate(self):
         self.children[0].aggregate()
 
+    def balance_tree(self):
+        self.children[0].balance_tree()
+
     def to_dict(self):
         return {self.name: self.children[0].to_dict()}
 
 class XorGate(GateNode):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, delay_t0=None, delay_deltaT=None):
+        super().__init__(name, delay_t0, delay_deltaT)
 
     def evaluate(self):
         if len(self.children) != 2:
@@ -197,22 +235,51 @@ if __name__ == '__main__':
     with open(input_filename) as input_file:
         data = json.load(input_file)
 
-    myCircuit = parse_ast(data["ASTCircuit"])
-    myCircuit.set_input_values(data["Inputs"])
-    myCircuit.set_delay_values(data["GateDelays"])
+    original_circuit = parse_ast(data["ASTCircuit"])
+    original_circuit.set_input_values(data["Inputs"])
+    original_circuit.set_delay_values(data["GateDelays"])
+    total_delay = original_circuit.get_delay()
 
-    total_delay = myCircuit.get_delay()
+    optimized_circuit_type = "Original Circuit"
+    optimized_total_delay = total_delay
 
-    aggregated_circuit = deepcopy(myCircuit)
+    aggregated_circuit = deepcopy(original_circuit)
     aggregated_circuit.aggregate()
     aggregated_circuit_total_delay = aggregated_circuit.get_delay()
+    if aggregated_circuit_total_delay < optimized_total_delay:
+        optimized_total_delay = aggregated_circuit_total_delay
+        optimized_circuit_type = "Aggregated Tree Circuit"
+
+    balanced_tree_circuit = deepcopy(aggregated_circuit)
+    balanced_tree_circuit.balance_tree()
+    balanced_tree_circuit_total_delay = balanced_tree_circuit.get_delay()
+    if balanced_tree_circuit_total_delay < optimized_total_delay:
+        optimized_total_delay = balanced_tree_circuit_total_delay
+        optimized_circuit_type = "Balanced Tree Circuit"
 
     result = {
-        "TotalDelay": total_delay,
-        "Output": int(myCircuit.evaluate()),
-        "SatisfyTimeConstraint": total_delay <= data["TimeConstraint"],
-        "OptimizedCircuit": aggregated_circuit.to_dict(),
-        "OptimizedTotalDelay": aggregated_circuit_total_delay
+        "Options": {
+            "OriginalCircuit": {
+                "TotalDelay": total_delay,
+                "Output": int(original_circuit.evaluate()),
+                "SatisfyTimeConstraint": total_delay <= data["TimeConstraint"],
+                "ExpressionTree": original_circuit.to_dict()
+            },
+            "AggregatedTreeCircuit": {
+                "TotalDelay": aggregated_circuit_total_delay,
+                "Output": int(aggregated_circuit.evaluate()),
+                "SatisfyTimeConstraint": aggregated_circuit_total_delay <= data["TimeConstraint"],
+                "ExpressionTree": aggregated_circuit.to_dict()
+            },
+            "BalancedTreeCircuit": {
+                "TotalDelay": balanced_tree_circuit_total_delay,
+                "Output": int(balanced_tree_circuit.evaluate()),
+                "SatisfyTimeConstraint": balanced_tree_circuit_total_delay <= data["TimeConstraint"],
+                "ExpressionTree": balanced_tree_circuit.to_dict()
+            },
+        },
+        "OptimizedCircuitType": optimized_circuit_type,
+        "OptimizedTotalDelay": optimized_total_delay
     }
     with open(output_filename, 'w') as outfile:
         json.dump(result, outfile, indent=2)

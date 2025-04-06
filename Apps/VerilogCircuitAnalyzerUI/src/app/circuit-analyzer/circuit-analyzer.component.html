@@ -13,7 +13,7 @@
         [uploader]="uploader"
         class="well my-drop-zone text-center p-5"
       >
-      <i class="fa fa-solid fa-upload fa-2x"></i>
+        <i class="fa fa-solid fa-upload fa-2x"></i>
       </div>
 
       <!-- Hidden file input -->
@@ -53,7 +53,7 @@
             <strong>{{ item?.file?.name }}</strong>
           </td>
           <td *ngIf="uploader.options.isHTML5" nowrap>
-            {{ item?.file?.size/1024/1024 | number:'.2' }} MB
+            {{ item?.file?.size / 1024 / 1024 | number:'.2' }} MB
           </td>
           <td *ngIf="uploader.options.isHTML5">
             <div class="progress" style="margin-bottom: 0;">
@@ -120,7 +120,6 @@
   </div>
 
 
-
   <div class="row">
     <div class="col-md-6">
       <div *ngIf="parserResponse" class="panel panel-default response-tab mt-3 p-2">
@@ -151,11 +150,29 @@
             {{ isDiagramViewerCollapsed ? 'Show Diagram' : 'Hide Diagram' }}
           </button>
 
+          <button type="button" class="btn btn-warning" (click)="diagramCreate(0)">
+            Fit To Page
+          </button>
         </div>
         <div class="panel-body mt-2" [hidden]="isDiagramViewerCollapsed">
+          <div *ngIf="originalCircuitInfo" class="labels-container d-flex justify-content-between align-items-center mb-2">
+            <div class="label-item">
+              <i class="fa fa-clock-o"></i>
+              <span class="ml-1"> <strong> Total:</strong>  {{ originalCircuitInfo.totalDelay }}</span>
+            </div>
+            <div class="label-item">
+              <i class="fa"
+                 [ngClass]="originalCircuitInfo.satisfyTimeConstraint ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+              <span class="ml-1"> <strong> Satisfy Time Constraint: </strong>  <span [ngClass]="originalCircuitInfo.satisfyTimeConstraint ? 'text-success' : 'text-danger'">{{ originalCircuitInfo.satisfyTimeConstraint }}</span></span>
+            </div>
+            <div class="label-item">
+              <i class="fa fa-arrow-right"></i>
+              <span class="ml-1"> <strong> Output:</strong> {{ originalCircuitInfo.output }}</span>
+            </div>
+          </div>
           <div class="control-section">
-            <div id="diagram-space"  style="width: 100%; height: 600px" class="">
-              <ejs-diagram #diagramParsed id="diagramParsed"
+            <div id="diagram-space" style="width: 100%; height: 600px" class="">
+              <ejs-diagram *ngIf="!isDiagramViewerCollapsed" #diagramParsed id="diagramParsed"
                            width="100%" height="100%"
                            [snapSettings]='snapSettings'
                            [nodes]='nodes'
@@ -195,13 +212,18 @@
                 <td>{{ gate }}</td>
                 <td>
                   <input type="number" step="any" class="form-control" formControlName="t0" placeholder="Delay">
-                  <div *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('t0')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('t0')?.invalid" class="text-danger">
+                  <div
+                    *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('t0')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('t0')?.invalid"
+                    class="text-danger">
                     Please enter delay for {{ gate }}.
                   </div>
                 </td>
                 <td>
-                  <input type="number" step="any" class="form-control" value="0.0" formControlName="deltaT" placeholder="ΔT">
-                  <div *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.invalid" class="text-danger">
+                  <input type="number" step="any" class="form-control" value="0.0" formControlName="deltaT"
+                         placeholder="ΔT">
+                  <div
+                    *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.invalid"
+                    class="text-danger">
                     Please enter ΔT for {{ gate }}.
                   </div>
                 </td>
@@ -231,8 +253,9 @@
                     <option value="1">1</option>
                   </select>
                   <!-- Display error if control is touched and invalid -->
-                  <div *ngIf="(gateForm.get('Inputs')?.get(input)?.touched && gateForm.get('Inputs')?.get(input)?.invalid)"
-                       class="text-danger">
+                  <div
+                    *ngIf="(gateForm.get('Inputs')?.get(input)?.touched && gateForm.get('Inputs')?.get(input)?.invalid)"
+                    class="text-danger">
                     Please select a value for input {{ input }}.
                   </div>
                 </td>
@@ -259,9 +282,8 @@
     </form>
   </div>
 
-
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
         <div class="panel-heading d-flex justify-content-between align-items-center">
           <button type="button" class="btn btn-info" (click)="toggleAnalyzerResponseCollapse()">
@@ -280,28 +302,99 @@
         </div>
       </div>
     </div>
+
+  </div>
+
+  <div class="row">
     <div class="col-md-6">
       <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
         <div class="panel-heading d-flex justify-content-between align-items-center">
-          <button type="button" class="btn btn-info" (click)="toggleOptimizedDiagramViewerCollapse()">
+          <button type="button" class="btn btn-info" (click)="toggleOptimizedByAggregationDiagramViewerCollapse()">
             <i class="fa"
-               [ngClass]="isOptimizedDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
-            {{ isOptimizedDiagramViewerCollapsed ? 'Show Optimized Diagram' : 'Hide Optimized Diagram' }}
+               [ngClass]="isOptimizedByAggregationDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isOptimizedByAggregationDiagramViewerCollapsed ? 'Show Optimized By Aggregation Diagram' : 'Hide Optimized By Aggregation Diagram' }}
+          </button>
+          <button type="button" class="btn btn-warning" (click)="optimizedByAggregationDiagramCreate(0)">
+            Fit To Page
           </button>
 
         </div>
-        <div class="panel-body mt-2" [hidden]="isOptimizedDiagramViewerCollapsed">
+        <div class="panel-body mt-2" [hidden]="isOptimizedByAggregationDiagramViewerCollapsed">
+          <div class="labels-container d-flex justify-content-between align-items-center mb-2">
+            <div class="label-item">
+              <i class="fa fa-clock-o"></i>
+              <span class="ml-1"> <strong> Total Delay:</strong>  {{ optimizedByAggregationCircuitInfo.totalDelay }}</span>
+            </div>
+            <div class="label-item">
+              <i class="fa"
+                 [ngClass]="optimizedByAggregationCircuitInfo.satisfyTimeConstraint ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+              <span class="ml-1"> <strong> Satisfy Time Constraint: </strong>  <span [ngClass]="optimizedByAggregationCircuitInfo.satisfyTimeConstraint ? 'text-success' : 'text-danger'">{{ optimizedByAggregationCircuitInfo.satisfyTimeConstraint }}</span></span>
+            </div>
+            <div class="label-item">
+              <i class="fa fa-arrow-right"></i>
+              <span class="ml-1"> <strong> Output:</strong> {{ optimizedByAggregationCircuitInfo.output }}</span>
+            </div>
+          </div>
           <div class="control-section">
-            <div id="optimized-diagram-space"  style="width: 100%; height: 600px" class="">
-              <ejs-diagram #diagramParsedOptimized id="diagramParsedOptimized"
+            <div id="optimized-by-aggregation-diagram-space" style="width: 100%; height: 600px" class="">
+              <ejs-diagram *ngIf="!isOptimizedByAggregationDiagramViewerCollapsed"  #diagramOptimizedByAggregation id="diagramOptimizedByAggregation"
                            width="100%" height="100%"
                            [snapSettings]='snapSettings'
-                           [nodes]='nodesOptimized'
-                           [connectors]='connectorsOptimized'
+                           [nodes]='nodesOptimizedByAggregation'
+                           [connectors]='connectorsOptimizedByAggregation'
                            [layout]="layout"
                            [getConnectorDefaults]='getConnectorDefaults'
                            [getNodeDefaults]='getNodeDefaults'
-                           (created)="optimizedDiagramCreate($event)">
+                           (created)="optimizedByAggregationDiagramCreate($event)">
+              </ejs-diagram>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-info" (click)="toggleOptimizedByBalancingTreeDiagramViewerCollapse()">
+            <i class="fa"
+               [ngClass]="isOptimizedByBalancingTreeDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isOptimizedByBalancingTreeDiagramViewerCollapsed ? 'Show Optimized By Balancing Tree Diagram' : 'Hide Optimized By Balancing Tree Diagram' }}
+          </button>
+
+          <button type="button" class="btn btn-warning" (click)="optimizedByBalancingTreeDiagramCreate(0)">
+             Fit To Page
+          </button>
+
+        </div>
+        <div class="panel-body mt-2" [hidden]="isOptimizedByBalancingTreeDiagramViewerCollapsed">
+          <div class="labels-container d-flex justify-content-between align-items-center mb-2">
+            <div class="label-item">
+              <i class="fa fa-regular fa-clock-o"></i>
+              <span class="ml-1"> <strong> Total Delay:</strong>  {{ optimizedByBalancingTreeCircuitInfo.totalDelay }}</span>
+            </div>
+            <div class="label-item">
+              <i class="fa"
+                 [ngClass]="optimizedByBalancingTreeCircuitInfo.satisfyTimeConstraint ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+              <span class="ml-1"> <strong> Satisfy Time Constraint: </strong>  <span [ngClass]="optimizedByBalancingTreeCircuitInfo.satisfyTimeConstraint ? 'text-success' : 'text-danger'">{{ optimizedByBalancingTreeCircuitInfo.satisfyTimeConstraint }}</span></span>
+              </div>
+              <div class="label-item">
+                <i class="fa fa-arrow-right"></i>
+                <span class="ml-1"> <strong> Output:</strong> {{ optimizedByBalancingTreeCircuitInfo.output }}</span>
+              </div>
+            </div>
+          <div class="control-section">
+            <div id="optimized-by-balancing-tree-diagram-space" style="width: 100%; height: 600px" class="">
+              <ejs-diagram *ngIf="!isOptimizedByBalancingTreeDiagramViewerCollapsed"
+                           #diagramOptimizedByBalancingTree id="diagramOptimizedByBalancingTree"
+                           width="100%" height="100%"
+                           [snapSettings]='snapSettings'
+                           [nodes]='nodesOptimizedByBalancingTree'
+                           [connectors]='connectorsOptimizedByBalancingTree'
+                           [layout]="layout"
+                           [getConnectorDefaults]='getConnectorDefaults'
+                           [getNodeDefaults]='getNodeDefaults'
+                           (created)="optimizedByBalancingTreeDiagramCreate($event)">
               </ejs-diagram>
             </div>
           </div>

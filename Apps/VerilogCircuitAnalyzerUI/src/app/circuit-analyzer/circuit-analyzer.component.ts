@@ -14,6 +14,12 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CircuitAnalysisApiService} from '../services/circuit-analysis-api.service';
 import {firstValueFrom} from 'rxjs';
 
+class CircuitInformationModel {
+  totalDelay: number;
+  output: number;
+  satisfyTimeConstraint: boolean;
+}
+
 @Component({
   selector: 'app-circuit-analyzer',
   standalone: false,
@@ -93,11 +99,15 @@ export class CircuitAnalyzerComponent {
     this.isAnalyzerResponseCollapsed = !this.isAnalyzerResponseCollapsed;
   }
 
-  isOptimizedDiagramViewerCollapsed = true;
-  toggleOptimizedDiagramViewerCollapse(): void {
-    this.isOptimizedDiagramViewerCollapsed = !this.isOptimizedDiagramViewerCollapsed;
+  isOptimizedByAggregationDiagramViewerCollapsed = true;
+  toggleOptimizedByAggregationDiagramViewerCollapse(): void {
+    this.isOptimizedByAggregationDiagramViewerCollapsed = !this.isOptimizedByAggregationDiagramViewerCollapsed;
   }
 
+  isOptimizedByBalancingTreeDiagramViewerCollapsed = true;
+  toggleOptimizedByBalancingTreeDiagramViewerCollapse(): void {
+    this.isOptimizedByBalancingTreeDiagramViewerCollapsed = !this.isOptimizedByBalancingTreeDiagramViewerCollapsed;
+  }
   copyJson(targetObj: any): void {
     const jsonString = JSON.stringify(targetObj, null, 2);
     this.clipboard.copy(jsonString);
@@ -112,11 +122,17 @@ export class CircuitAnalyzerComponent {
   public nodes: NodeModel[] = [];
   public connectors: ConnectorModel[] = [];
 
-  @ViewChild('diagramParsedOptimized')
-  public diagramParsedOptimized: DiagramComponent;
-  public nodesOptimized: NodeModel[] = [];
-  public connectorsOptimized: ConnectorModel[] = [];
+  @ViewChild('diagramOptimizedByAggregation')
+  public diagramOptimizedByAggregation: DiagramComponent;
+  public nodesOptimizedByAggregation: NodeModel[] = [];
+  public connectorsOptimizedByAggregation: ConnectorModel[] = [];
+  public optimizedByAggregationCircuitInfo: CircuitInformationModel;
 
+  @ViewChild('diagramOptimizedByBalancingTree')
+  public diagramOptimizedByBalancingTree: DiagramComponent;
+  public nodesOptimizedByBalancingTree: NodeModel[] = [];
+  public connectorsOptimizedByBalancingTree: ConnectorModel[] = [];
+  public optimizedByBalancingTreeCircuitInfo: CircuitInformationModel;
 
   public snapSettings: SnapSettingsModel = {
     constraints: SnapConstraints.All & ~SnapConstraints.ShowLines | SnapConstraints.SnapToLines
@@ -126,7 +142,8 @@ export class CircuitAnalyzerComponent {
     type: 'HierarchicalTree',
     orientation: 'LeftToRight',   // or "TopToBottom", etc.
     horizontalSpacing: 50,
-    verticalSpacing: 30
+    verticalSpacing: 30,
+    enableAnimation: true
   };
 
   public getNodeDefaults(node: NodeModel): NodeModel {
@@ -144,8 +161,12 @@ export class CircuitAnalyzerComponent {
     this.diagram.fitToPage();
   }
 
-  public optimizedDiagramCreate(args: Object): void {
-    this.diagramParsedOptimized.fitToPage();
+  public optimizedByAggregationDiagramCreate(args: Object): void {
+    this.diagramOptimizedByAggregation.fitToPage();
+  }
+
+  public optimizedByBalancingTreeDiagramCreate(args: Object): void {
+    this.diagramOptimizedByBalancingTree.fitToPage();
   }
 
   /* Form for circuit analysis  */
@@ -153,6 +174,7 @@ export class CircuitAnalyzerComponent {
   gateForm: FormGroup;
   gates: string[];
   inputs: string[];
+  originalCircuitInfo: CircuitInformationModel = undefined;
 
   initializeForm(): void {
     // Create the main form group with nested groups for gates and inputs
@@ -193,8 +215,10 @@ export class CircuitAnalyzerComponent {
         console.log('Response from server:', response);
         this.analyzerResponse = response;
 
+        // @ts-ignore
+        this.originalCircuitInfo = this.analyzerResponse["options"]["OriginalCircuit"]
 
-        let circuitDefinition = {
+        let circuitOptimizedByAggregationDefinition = {
           // @ts-ignore
           inputs: this.parserResponse["parserScriptResponse"]["inputs"],
           // @ts-ignore
@@ -202,11 +226,29 @@ export class CircuitAnalyzerComponent {
           // @ts-ignore
           gates: this.parserResponse["parserScriptResponse"]["gates"],
           // @ts-ignore
-          expression_tree: this.analyzerResponse["optimizedCircuit"],
+          expression_tree: this.analyzerResponse["options"]["AggregatedTreeCircuit"]["expressionTree"],
         };
-        const {nodes, connectors} = this.circuitBuilder.buildCircuit(circuitDefinition);
-        this.nodesOptimized = nodes;
-        this.connectorsOptimized = connectors;
+        const optimizedByAggregationResponse = this.circuitBuilder.buildCircuit(circuitOptimizedByAggregationDefinition);
+        this.nodesOptimizedByAggregation = optimizedByAggregationResponse.nodes;
+        this.connectorsOptimizedByAggregation = optimizedByAggregationResponse.connectors;
+        // @ts-ignore
+        this.optimizedByAggregationCircuitInfo = this.analyzerResponse["options"]["AggregatedTreeCircuit"];
+
+        let circuitOptimizedByBalancingTreeDefinition = {
+          // @ts-ignore
+          inputs: this.parserResponse["parserScriptResponse"]["inputs"],
+          // @ts-ignore
+          outputs: this.parserResponse["parserScriptResponse"]["outputs"],
+          // @ts-ignore
+          gates: this.parserResponse["parserScriptResponse"]["gates"],
+          // @ts-ignore
+          expression_tree: this.analyzerResponse["options"]["BalancedTreeCircuit"]["expressionTree"],
+        };
+        const optimizedByBalancingTreeResponse = this.circuitBuilder.buildCircuit(circuitOptimizedByBalancingTreeDefinition);
+        this.nodesOptimizedByBalancingTree = optimizedByBalancingTreeResponse.nodes;
+        this.connectorsOptimizedByBalancingTree = optimizedByBalancingTreeResponse.connectors;
+        // @ts-ignore
+        this.optimizedByBalancingTreeCircuitInfo = this.analyzerResponse["options"]["BalancedTreeCircuit"];
       })
       .catch((error: any) => {
         console.error('Error occurred while analyzing the circuit:', error);
