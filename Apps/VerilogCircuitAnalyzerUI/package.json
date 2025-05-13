@@ -20,12 +20,16 @@
     "@angular/router": "^19.2.0",
     "@syncfusion/ej2-angular-diagrams": "^28.2.12",
     "bootstrap": "^5.2.3",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "font-awesome": "^4.7.0",
     "ng2-file-upload": "^8.0.0",
     "ngx-bootstrap": "^19.0.2",
     "ngx-json-viewer": "^3.2.1",
+    "path": "^0.12.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "winston": "^3.17.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

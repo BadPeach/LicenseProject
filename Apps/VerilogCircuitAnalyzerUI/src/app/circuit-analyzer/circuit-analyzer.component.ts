@@ -82,6 +82,7 @@ export class CircuitAnalyzerComponent {
     this.uploader.clearQueue();
     this.parserResponse = null;
     this.analyzerResponse = null;
+    this.originalCircuitInfo = null;
   }
 
   isParserResponseCollapsed = true; // implicit collapsed

@@ -1,9 +1,60 @@
 {
-  "TotalDelay": 5.2,
-  "Output": true,
-  "SatisfyTimeConstraint": false,
-  "OptimizedCircuit": {
-    "dummy": "test"
+  "Options": {
+    "OriginalCircuit": {
+      "TotalDelay": 5.2,
+      "Output": 1,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "or": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "not": "a"
+          }
+        ]
+      }
+    },
+    "AggregatedTreeCircuit": {
+      "TotalDelay": 5.2,
+      "Output": 1,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "or": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "not": "a"
+          }
+        ]
+      }
+    },
+    "BalancedTreeCircuit": {
+      "TotalDelay": 5.2,
+      "Output": 1,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "or": [
+              "a",
+              "b"
+            ]
+          },
+          {
+            "not": "a"
+          }
+        ]
+      }
+    }
   },
-  "OptimizedTotalDelay": 0
+  "OptimizedCircuitType": "Original Circuit",
+  "OptimizedTotalDelay": 5.2
 }

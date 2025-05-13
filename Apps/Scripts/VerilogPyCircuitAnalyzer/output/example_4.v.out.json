@@ -1,7 +1,7 @@
 {
-  "Result": {
+  "Options": {
     "OriginalCircuit": {
-      "TotalDelay": 50.0,
+      "TotalDelay": 370.00000000000006,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
@@ -124,7 +124,7 @@
       }
     },
     "AggregatedTreeCircuit": {
-      "TotalDelay": 28.0,
+      "TotalDelay": 206.66666666666669,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
@@ -163,7 +163,7 @@
       }
     },
     "BalancedTreeCircuit": {
-      "TotalDelay": 24.0,
+      "TotalDelay": 160.0,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
@@ -271,5 +271,5 @@
     }
   },
   "OptimizedCircuitType": "Balanced Tree Circuit",
-  "OptimizedTotalDelay": 24.0
+  "OptimizedTotalDelay": 160.0
 }

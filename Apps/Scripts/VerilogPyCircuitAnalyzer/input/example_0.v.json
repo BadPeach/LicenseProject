@@ -5,22 +5,20 @@
            {"not":  "a"}
        ]
     },
-    "GateDelays": {
-        "and": {
-            "t0": 3,
-            "deltaT": 0.1
-        },
-        "not": {
-            "t0": 1,
-            "deltaT": 0.1
-        },
-        "or": {
-            "t0": 2,
-            "deltaT": 0.1
-        },
-        "xor": {
-            "t0": 5,
-            "deltaT": 0.1
+    "Delays": {
+        "Model": "simple",
+        "Params": {
+          "GateTableSimple": {
+            "and": { "t0": 3,  "deltaT": 0.1 },
+            "not": { "t0": 1, "deltaT": 0.1 },
+            "or": { "t0": 2,  "deltaT": 0.1 },
+            "xor": { "t0": 5,  "deltaT": 0.1 }
+          },
+
+          "Tau": 5,
+          "GateTableLogicalEffort": {
+            "xor": { "g": 4, "p": 4 }
+          }
         }
     },
     "Inputs": {

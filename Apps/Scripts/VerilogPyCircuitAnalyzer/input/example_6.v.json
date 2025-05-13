@@ -1,18 +1,18 @@
 {
   "Delays": {
-      "Model": "logical_effort",
-      "Params": {
-        "GateTableSimple": {
-          "and": { "t0": 2, "deltaT": 1 },
-          "or": { "t0": 2, "deltaT": 1 },
-          "not": { "t0": 1, "deltaT": 1 }
-        },
+    "Model": "logical_effort",
+    "Params": {
+      "GateTableSimple": {
+        "and": { "t0": 2, "deltaT": 1 },
+        "or" : { "t0": 2, "deltaT": 1 },
+        "not": { "t0": 1, "deltaT": 1 }
+      },
 
-        "Tau": 3,
-        "GateTableLogicalEffort": {
-          "xor": { "g": 4, "p": 4 }
-        }
+      "Tau": 5,
+      "GateTableLogicalEffort": {
+        "xor": { "g": 4, "p": 4 }
       }
+    }
   },
   "Inputs": {
     "A1": 0,

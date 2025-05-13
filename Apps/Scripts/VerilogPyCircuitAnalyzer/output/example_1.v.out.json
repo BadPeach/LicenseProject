@@ -1,4 +1,97 @@
 {
-  "delay": "dummy",
-  "optimized_circuit": "dummy"
+  "Options": {
+    "OriginalCircuit": {
+      "TotalDelay": 9.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          {
+            "and": [
+              {
+                "not": {
+                  "and": [
+                    "A",
+                    "B"
+                  ]
+                }
+              },
+              {
+                "or": [
+                  "B",
+                  "C"
+                ]
+              }
+            ]
+          },
+          {
+            "xor": [
+              "A",
+              "C"
+            ]
+          }
+        ]
+      }
+    },
+    "AggregatedTreeCircuit": {
+      "TotalDelay": 7.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          {
+            "xor": [
+              "A",
+              "C"
+            ]
+          },
+          {
+            "not": {
+              "and": [
+                "A",
+                "B"
+              ]
+            }
+          },
+          {
+            "or": [
+              "B",
+              "C"
+            ]
+          }
+        ]
+      }
+    },
+    "BalancedTreeCircuit": {
+      "TotalDelay": 7.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          {
+            "xor": [
+              "A",
+              "C"
+            ]
+          },
+          {
+            "not": {
+              "and": [
+                "A",
+                "B"
+              ]
+            }
+          },
+          {
+            "or": [
+              "B",
+              "C"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "OptimizedCircuitType": "Aggregated Tree Circuit",
+  "OptimizedTotalDelay": 7.0
 }
