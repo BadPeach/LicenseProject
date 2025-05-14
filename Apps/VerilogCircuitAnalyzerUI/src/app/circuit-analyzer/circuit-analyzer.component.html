@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" xmlns="http://www.w3.org/1999/html">
   <div class="navbar navbar-default">
     <div class="navbar-header">
     </div>
@@ -197,39 +197,79 @@
       <div class="row">
         <!-- Left Column: Gate Parameters Table -->
         <div class="col-md-6">
-          <h3>Gate Parameters</h3>
-          <div formGroupName="GateDelays" class="table-responsive">
-            <table class="table table-striped table-bordered">
-              <thead class="thead-custom">
-              <tr>
-                <th>Gate</th>
-                <th>t₀ (Delay)</th>
-                <th>ΔT</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let gate of gates" [formGroupName]="gate">
-                <td>{{ gate }}</td>
-                <td>
-                  <input type="number" step="any" class="form-control" formControlName="t0" placeholder="Delay">
-                  <div
-                    *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('t0')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('t0')?.invalid"
-                    class="text-danger">
-                    Please enter delay for {{ gate }}.
-                  </div>
-                </td>
-                <td>
-                  <input type="number" step="any" class="form-control" value="0.0" formControlName="deltaT"
-                         placeholder="ΔT">
-                  <div
-                    *ngIf="gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.touched && gateForm.get('GateDelays')?.get(gate)?.get('deltaT')?.invalid"
-                    class="text-danger">
-                    Please enter ΔT for {{ gate }}.
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <h3>Gate Parameters for CMOS</h3>
+
+          <div formGroupName="Delays">
+
+            <div formGroupName="Params">
+
+              <div  class="form-group">
+                <label class="fw-bold" for="Tau">Tau (τ, ps)</label>
+                <input type="number" step="any" class="form-control" id="Tau"
+                       formControlName="Tau" placeholder="Enter τ">
+                <div *ngIf="(getParamsGateGroup('Tau')?.touched && getParamsGateGroup('Tau')?.invalid)"
+                     class="text-danger">
+                  Please enter a total time constraint.
+                </div>
+              </div>
+              <br>
+
+              <div formGroupName="GateTableLogicalEffort" class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead class="thead-custom">
+                  <tr>
+                    <th>Gate</th>
+                    <th>Override?</th>
+                    <th>g</th>
+                    <th>p</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let gate of gates" [formGroupName]="gate">
+                    <td>{{ gate }}</td>
+
+                    <!-- OVERRIDE CHECKBOX -->
+                    <td class="text-center">
+                      <input
+                        type="checkbox"
+                        formControlName="override"
+                        (change)="onOverrideChange(gate)" />
+                    </td>
+
+                    <!-- g INPUT -->
+                    <td>
+                      <input
+                        type="number"
+                        step="any"
+                        class="form-control"
+                        formControlName="g"
+                        placeholder="g">
+                      <div
+                        *ngIf="getGateGroup(gate).get('g')!.touched
+                         && getGateGroup(gate).get('g')!.invalid"
+                        class="text-danger">
+                        Please enter g for {{ gate }}.
+                      </div>
+                    </td>
+
+                    <!-- p INPUT -->
+                    <td>
+                      <input
+                        type="number"
+                        step="any"
+                        class="form-control"
+                        formControlName="p"
+                        placeholder="p">
+                      <div
+                        *ngIf="getGateGroup(gate).get('p')!.touched && getGateGroup(gate).get('p')!.invalid"
+                        class="text-danger">Please enter p for {{ gate }}.
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -298,7 +338,7 @@
           </button>
         </div>
         <div class="panel-body mt-2" [hidden]="isAnalyzerResponseCollapsed">
-          <ngx-json-viewer [json]="analyzerResponse" [depth]="3"></ngx-json-viewer>
+          <ngx-json-viewer [json]="analyzerResponse" [depth]="1"></ngx-json-viewer>
         </div>
       </div>
     </div>

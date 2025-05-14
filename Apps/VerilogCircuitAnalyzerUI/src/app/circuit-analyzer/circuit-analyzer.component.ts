@@ -180,19 +180,25 @@ export class CircuitAnalyzerComponent {
   initializeForm(): void {
     // Create the main form group with nested groups for gates and inputs
     this.gateForm = this.fb.group({
-      GateDelays: this.fb.group({}),
+      Delays: this.fb.group({
+        Model: ['logical_effort', Validators.required],
+        Params: this.fb.group({
+          Tau: [5.0, Validators.required],
+          GateTableLogicalEffort: this.fb.group({})
+        })
+      }),
       Inputs: this.fb.group({}),
       TimeConstraint: ['', Validators.required]
     });
 
-    // Create a nested FormGroup for each gate
-    const gatesGroup = this.gateForm.get('GateDelays') as FormGroup;
+    const gateTable = (this.gateForm.get('Delays.Params.GateTableLogicalEffort') as FormGroup);
     this.gates.forEach(gate => {
       const gateGroup = this.fb.group({
-        t0: ['', Validators.required],
-        deltaT: [0.0, Validators.required]
+        override: [false],
+        g: [{value: '', disabled: true}, Validators.required],
+        p: [{value: '', disabled: true}, Validators.required]
       });
-      gatesGroup.addControl(gate, gateGroup);
+      gateTable.addControl(gate, gateGroup);
     });
 
     // Create dynamic controls for each input value
@@ -200,6 +206,30 @@ export class CircuitAnalyzerComponent {
       const inputsGroup = this.gateForm.get('Inputs') as FormGroup;
       inputsGroup.addControl(`${input}`, this.fb.control(0, Validators.required));
     });
+  }
+
+  getGateGroup(gate: string) {
+    return this.gateForm.get(['Delays','Params','GateTableLogicalEffort', gate])!;
+  }
+
+  getParamsGateGroup(param: string) {
+    return this.gateForm.get(['Delays','Params', param])!;
+  }
+
+  // call this from the template (on checkbox change)
+  onOverrideChange(gate: string) {
+    const grp = this.getGateGroup(gate);
+    const ov = grp.get('override')!.value;
+
+    if (ov) {
+      grp.get('g')!.enable();
+      grp.get('p')!.enable();
+    } else {
+      grp.get('g')!.reset('', {emitEvent: false});
+      grp.get('p')!.reset('', {emitEvent: false});
+      grp.get('g')!.disable();
+      grp.get('p')!.disable();
+    }
   }
 
   onSubmitCircuitData(): void {

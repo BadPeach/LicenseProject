@@ -25,9 +25,12 @@ class LogicalEffort(DelayModel):
         self.over = overrides or {}
 
     def _gp(self, gate, n):
-        if gate in self.over:  # user override
+        if gate in self.over and self.over.get(gate).get('override') is True:  # user override
             o = self.over[gate]
-            return o['g'], o['p']
+            g = o['g']
+            p = o['p']
+            if g != '' and p != '':
+                return g, p
         return self._BASE_GP[gate](n)
 
     def gate_delay(self, gate, n, fan_out=1):
