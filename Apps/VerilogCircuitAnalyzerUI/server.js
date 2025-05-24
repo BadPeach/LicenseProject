@@ -52,10 +52,10 @@ app.get('/circuit-analyzer', function(req,res) {
 
 
 // Start the app by listening on the default Heroku port
-app.listen(process.env.PORT || 4200, '0.0.0.0',() => {
+app.listen(process.env.PORT || 5000, '0.0.0.0',() => {
   logger.info(`
       ################################################
-      🛡️  Server listening on port: ${process.env.PORT || 4200} 🛡️
+      🛡️  Server listening on port: ${process.env.PORT || 5000} 🛡️
       ################################################
     `);
 });
