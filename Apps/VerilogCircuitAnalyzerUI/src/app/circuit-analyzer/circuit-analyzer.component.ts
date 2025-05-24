@@ -1,7 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
 import {Clipboard} from '@angular/cdk/clipboard';
-import {HttpClient} from '@angular/common/http';
 import {
   ConnectorModel,
   DiagramComponent, LayoutModel,
@@ -32,7 +31,6 @@ export class CircuitAnalyzerComponent {
   hasBaseDropZoneOver:boolean;
   parserResponse: {};
   analyzerResponse: {};
-  private http: any;
 
   constructor (private clipboard: Clipboard,
                private circuitBuilder: CircuitBuilderService,
@@ -109,6 +107,16 @@ export class CircuitAnalyzerComponent {
   toggleOptimizedByBalancingTreeDiagramViewerCollapse(): void {
     this.isOptimizedByBalancingTreeDiagramViewerCollapsed = !this.isOptimizedByBalancingTreeDiagramViewerCollapsed;
   }
+
+  isOptimizedBySympyCNFDiagramViewerCollapsed = true;
+  toggleOptimizedBySympyCNFDiagramViewerCollapse(): void {
+    this.isOptimizedBySympyCNFDiagramViewerCollapsed = !this.isOptimizedBySympyCNFDiagramViewerCollapsed;
+  }
+
+  isOptimizedBySympyDNFDiagramViewerCollapsed = true;
+  toggleOptimizedBySympyDNFDiagramViewerCollapse(): void {
+    this.isOptimizedBySympyDNFDiagramViewerCollapsed = !this.isOptimizedBySympyDNFDiagramViewerCollapsed;
+  }
   copyJson(targetObj: any): void {
     const jsonString = JSON.stringify(targetObj, null, 2);
     this.clipboard.copy(jsonString);
@@ -134,6 +142,18 @@ export class CircuitAnalyzerComponent {
   public nodesOptimizedByBalancingTree: NodeModel[] = [];
   public connectorsOptimizedByBalancingTree: ConnectorModel[] = [];
   public optimizedByBalancingTreeCircuitInfo: CircuitInformationModel;
+
+  @ViewChild('diagramOptimizedBySympyCNF')
+  public diagramOptimizedBySympyCNF: DiagramComponent;
+  public nodesOptimizedBySympyCNF: NodeModel[] = [];
+  public connectorsOptimizedBySympyCNF: ConnectorModel[] = [];
+  public optimizedBySympyCNFCircuitInfo: CircuitInformationModel;
+
+  @ViewChild('diagramOptimizedBySympyDNF')
+  public diagramOptimizedBySympyDNF: DiagramComponent;
+  public nodesOptimizedBySympyDNF: NodeModel[] = [];
+  public connectorsOptimizedBySympyDNF: ConnectorModel[] = [];
+  public optimizedBySympyDNFCircuitInfo: CircuitInformationModel;
 
   public snapSettings: SnapSettingsModel = {
     constraints: SnapConstraints.All & ~SnapConstraints.ShowLines | SnapConstraints.SnapToLines
@@ -168,6 +188,14 @@ export class CircuitAnalyzerComponent {
 
   public optimizedByBalancingTreeDiagramCreate(args: Object): void {
     this.diagramOptimizedByBalancingTree.fitToPage();
+  }
+
+  public optimizedBySympyCNFDiagramCreate(args: Object): void {
+    this.diagramOptimizedBySympyCNF.fitToPage();
+  }
+
+  public optimizedBySympyDNFDiagramCreate(args: Object): void {
+    this.diagramOptimizedBySympyDNF.fitToPage();
   }
 
   /* Form for circuit analysis  */
@@ -280,6 +308,39 @@ export class CircuitAnalyzerComponent {
         this.connectorsOptimizedByBalancingTree = optimizedByBalancingTreeResponse.connectors;
         // @ts-ignore
         this.optimizedByBalancingTreeCircuitInfo = this.analyzerResponse["options"]["BalancedTreeCircuit"];
+
+        let circuitOptimizedBySympyCNFDefinition = {
+          // @ts-ignore
+          inputs: this.parserResponse["parserScriptResponse"]["inputs"],
+          // @ts-ignore
+          outputs: this.parserResponse["parserScriptResponse"]["outputs"],
+          // @ts-ignore
+          gates: this.parserResponse["parserScriptResponse"]["gates"],
+          // @ts-ignore
+            expression_tree: this.analyzerResponse["options"]["SympyCNFOptimizedCircuit"]["expressionTree"],
+        };
+        const optimizedBySympyCNFResponse = this.circuitBuilder.buildCircuit(circuitOptimizedBySympyCNFDefinition);
+        this.nodesOptimizedBySympyCNF = optimizedBySympyCNFResponse.nodes;
+        this.connectorsOptimizedBySympyCNF = optimizedBySympyCNFResponse.connectors;
+        // @ts-ignore
+        this.optimizedBySympyCNFCircuitInfo = this.analyzerResponse["options"]["SympyCNFOptimizedCircuit"];
+
+        let circuitOptimizedBySympyDNFDefinition = {
+          // @ts-ignore
+          inputs: this.parserResponse["parserScriptResponse"]["inputs"],
+          // @ts-ignore
+          outputs: this.parserResponse["parserScriptResponse"]["outputs"],
+          // @ts-ignore
+          gates: this.parserResponse["parserScriptResponse"]["gates"],
+          // @ts-ignore
+          expression_tree: this.analyzerResponse["options"]["SympyDNFOptimizedCircuit"]["expressionTree"],
+        };
+        const optimizedBySympyDNFResponse = this.circuitBuilder.buildCircuit(circuitOptimizedBySympyDNFDefinition);
+        this.nodesOptimizedBySympyDNF = optimizedBySympyDNFResponse.nodes;
+        this.connectorsOptimizedBySympyDNF = optimizedBySympyDNFResponse.connectors;
+        // @ts-ignore
+        this.optimizedBySympyDNFCircuitInfo = this.analyzerResponse["options"]["SympyDNFOptimizedCircuit"];
+
       })
       .catch((error: any) => {
         console.error('Error occurred while analyzing the circuit:', error);

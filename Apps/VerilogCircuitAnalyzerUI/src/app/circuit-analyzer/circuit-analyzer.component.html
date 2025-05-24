@@ -444,5 +444,102 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-6">
+      <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-info" (click)="toggleOptimizedBySympyCNFDiagramViewerCollapse()">
+            <i class="fa"
+               [ngClass]="isOptimizedBySympyCNFDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isOptimizedBySympyCNFDiagramViewerCollapsed ? 'Show Optimized By Sympy CNF Diagram' : 'Hide Optimized By Sympy CNF Diagram' }}
+          </button>
+          <button type="button" class="btn btn-warning" (click)="optimizedBySympyCNFDiagramCreate(0)">
+            Fit To Page
+          </button>
+
+        </div>
+        <div class="panel-body mt-2" [hidden]="isOptimizedBySympyCNFDiagramViewerCollapsed">
+          <div class="labels-container d-flex justify-content-between align-items-center mb-2">
+            <div class="label-item">
+              <i class="fa fa-clock-o"></i>
+              <span class="ml-1"> <strong> Total Delay:</strong>  {{ optimizedBySympyCNFCircuitInfo.totalDelay }}</span>
+            </div>
+            <div class="label-item">
+              <i class="fa"
+                 [ngClass]="optimizedBySympyCNFCircuitInfo.satisfyTimeConstraint ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+              <span class="ml-1"> <strong> Satisfy Time Constraint: </strong>  <span [ngClass]="optimizedBySympyCNFCircuitInfo.satisfyTimeConstraint ? 'text-success' : 'text-danger'">{{ optimizedBySympyCNFCircuitInfo.satisfyTimeConstraint }}</span></span>
+            </div>
+            <div class="label-item">
+              <i class="fa fa-arrow-right"></i>
+              <span class="ml-1"> <strong> Output:</strong> {{ optimizedBySympyCNFCircuitInfo.output }}</span>
+            </div>
+          </div>
+          <div class="control-section">
+            <div id="optimized-by-sympy-cnf-diagram-space" style="width: 100%; height: 600px" class="">
+              <ejs-diagram *ngIf="!isOptimizedBySympyCNFDiagramViewerCollapsed"  #diagramOptimizedBySympyCNF id="diagramOptimizedBySympyCNF"
+                           width="100%" height="100%"
+                           [snapSettings]='snapSettings'
+                           [nodes]='nodesOptimizedBySympyCNF'
+                           [connectors]='connectorsOptimizedBySympyCNF'
+                           [layout]="layout"
+                           [getConnectorDefaults]='getConnectorDefaults'
+                           [getNodeDefaults]='getNodeDefaults'
+                           (created)="optimizedBySympyCNFDiagramCreate($event)">
+              </ejs-diagram>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div *ngIf="analyzerResponse" class="panel panel-default response-tab mt-3 p-2">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+          <button type="button" class="btn btn-info" (click)="toggleOptimizedBySympyDNFDiagramViewerCollapse()">
+            <i class="fa"
+               [ngClass]="isOptimizedBySympyDNFDiagramViewerCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
+            {{ isOptimizedBySympyDNFDiagramViewerCollapsed ? 'Show Optimized By Sympy DNF Diagram' : 'Hide Optimized By Sympy DNF Diagram' }}
+          </button>
+          <button type="button" class="btn btn-warning" (click)="optimizedBySympyDNFDiagramCreate(0)">
+            Fit To Page
+          </button>
+
+        </div>
+        <div class="panel-body mt-2" [hidden]="isOptimizedBySympyDNFDiagramViewerCollapsed">
+          <div class="labels-container d-flex justify-content-between align-items-center mb-2">
+            <div class="label-item">
+              <i class="fa fa-clock-o"></i>
+              <span class="ml-1"> <strong> Total Delay:</strong>  {{ optimizedBySympyDNFCircuitInfo.totalDelay }}</span>
+            </div>
+            <div class="label-item">
+              <i class="fa"
+                 [ngClass]="optimizedBySympyDNFCircuitInfo.satisfyTimeConstraint ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'"></i>
+              <span class="ml-1"> <strong> Satisfy Time Constraint: </strong>  <span [ngClass]="optimizedBySympyDNFCircuitInfo.satisfyTimeConstraint ? 'text-success' : 'text-danger'">{{ optimizedBySympyDNFCircuitInfo.satisfyTimeConstraint }}</span></span>
+            </div>
+            <div class="label-item">
+              <i class="fa fa-arrow-right"></i>
+              <span class="ml-1"> <strong> Output:</strong> {{ optimizedBySympyDNFCircuitInfo.output }}</span>
+            </div>
+          </div>
+          <div class="control-section">
+            <div id="optimized-by-sympy-dnf-diagram-space" style="width: 100%; height: 600px" class="">
+              <ejs-diagram *ngIf="!isOptimizedBySympyDNFDiagramViewerCollapsed"  #diagramOptimizedBySympyDNF id="diagramOptimizedBySympyDNF"
+                           width="100%" height="100%"
+                           [snapSettings]='snapSettings'
+                           [nodes]='nodesOptimizedBySympyDNF'
+                           [connectors]='connectorsOptimizedBySympyDNF'
+                           [layout]="layout"
+                           [getConnectorDefaults]='getConnectorDefaults'
+                           [getNodeDefaults]='getNodeDefaults'
+                           (created)="optimizedBySympyDNFDiagramCreate($event)">
+              </ejs-diagram>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 

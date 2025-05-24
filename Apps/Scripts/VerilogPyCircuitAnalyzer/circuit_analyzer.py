@@ -3,6 +3,7 @@ import sys
 from copy import deepcopy
 
 from core.ast_nodes import InputNode, AndGate, OrGate, XorGate, NotGate
+from core.circuit_optimizations import ast_to_sympy, optimize_ast_with_sympy
 from core.delay_models import SimpleDelay, LogicalEffort
 
 
@@ -79,6 +80,22 @@ if __name__ == '__main__':
         optimized_total_delay = balanced_tree_circuit_total_delay
         optimized_circuit_type = "Balanced Tree Circuit"
 
+    sympy_cnf_optimized_circuit = optimize_ast_with_sympy(original_circuit, form='cnf')
+    sympy_cnf_optimized_circuit.set_input_values(data["Inputs"])
+    sympy_cnf_optimized_circuit.set_delay_model(delay_model)
+    sympy_cnf_optimized_circuit_total_delay = sympy_cnf_optimized_circuit.get_delay()
+    if sympy_cnf_optimized_circuit_total_delay < optimized_total_delay:
+        optimized_total_delay = sympy_cnf_optimized_circuit_total_delay
+        optimized_circuit_type = "Sympy CNF Optimized Circuit"
+
+    sympy_dnf_optimized_circuit = optimize_ast_with_sympy(original_circuit, form='dnf')
+    sympy_dnf_optimized_circuit.set_input_values(data["Inputs"])
+    sympy_dnf_optimized_circuit.set_delay_model(delay_model)
+    sympy_dnf_optimized_circuit_total_delay = sympy_dnf_optimized_circuit.get_delay()
+    if sympy_dnf_optimized_circuit_total_delay < optimized_total_delay:
+        optimized_total_delay = sympy_dnf_optimized_circuit_total_delay
+        optimized_circuit_type = "Sympy DNF Optimized Circuit"
+
     result = {
         "Options": {
             "OriginalCircuit": {
@@ -99,6 +116,18 @@ if __name__ == '__main__':
                 "SatisfyTimeConstraint": balanced_tree_circuit_total_delay <= data["TimeConstraint"],
                 "ExpressionTree": balanced_tree_circuit.to_dict()
             },
+            "SympyCNFOptimizedCircuit": {
+                "TotalDelay": sympy_cnf_optimized_circuit_total_delay,
+                "Output": int(sympy_cnf_optimized_circuit.evaluate()),
+                "SatisfyTimeConstraint": sympy_cnf_optimized_circuit_total_delay <= data["TimeConstraint"],
+                "ExpressionTree": sympy_cnf_optimized_circuit.to_dict()
+            },
+            "SympyDNFOptimizedCircuit": {
+                "TotalDelay": sympy_dnf_optimized_circuit_total_delay,
+                "Output": int(sympy_dnf_optimized_circuit.evaluate()),
+                "SatisfyTimeConstraint": sympy_dnf_optimized_circuit_total_delay <= data["TimeConstraint"],
+                "ExpressionTree": sympy_dnf_optimized_circuit.to_dict()
+            }
         },
         "OptimizedCircuitType": optimized_circuit_type,
         "OptimizedTotalDelay": optimized_total_delay

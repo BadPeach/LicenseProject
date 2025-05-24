@@ -53,8 +53,34 @@
           }
         ]
       }
+    },
+    "SympyCNFOptimizedCircuit": {
+      "TotalDelay": 4.1,
+      "Output": 1,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          "b",
+          {
+            "not": "a"
+          }
+        ]
+      }
+    },
+    "SympyDNFOptimizedCircuit": {
+      "TotalDelay": 4.1,
+      "Output": 1,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "and": [
+          "b",
+          {
+            "not": "a"
+          }
+        ]
+      }
     }
   },
-  "OptimizedCircuitType": "Original Circuit",
-  "OptimizedTotalDelay": 5.2
+  "OptimizedCircuitType": "Sympy CNF Optimized Circuit",
+  "OptimizedTotalDelay": 4.1
 }
