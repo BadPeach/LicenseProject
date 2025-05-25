@@ -5,7 +5,10 @@
       "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "PYTHON_PARSER_SCRIPT_PATH": "D:\\Facultate\\LICENTA\\LicenseRepository\\Apps\\Scripts\\VerilogPyParser\\parser.py",
+        "PYTHON_ANALYZER_SCRIPT_PATH": "D:\\Facultate\\LICENTA\\LicenseRepository\\Apps\\Scripts\\VerilogPyCircuitAnalyzer\\circuit_analyzer.py",
+        "PYTHON_PATH": "C:\\Users\\baril\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\python.exe"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5283"
@@ -15,7 +18,10 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "PYTHON_PARSER_SCRIPT_PATH": "D:\\Facultate\\LICENTA\\LicenseRepository\\Apps\\Scripts\\VerilogPyParser\\parser.py",
+        "PYTHON_ANALYZER_SCRIPT_PATH": "D:\\Facultate\\LICENTA\\LicenseRepository\\Apps\\Scripts\\VerilogPyCircuitAnalyzer\\circuit_analyzer.py",
+        "PYTHON_PATH": "C:\\Users\\baril\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\\python.exe"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7147;http://localhost:5283"

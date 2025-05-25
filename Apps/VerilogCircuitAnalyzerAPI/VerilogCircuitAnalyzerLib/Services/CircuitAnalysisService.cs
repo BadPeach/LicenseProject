@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -91,8 +92,10 @@ namespace VerilogCircuitAnalyzerLib.Services
 
         private string _pyParserOutputFolder = "ParserOutput";
         private string _pyAnalyzerOutputFolder = "AnalyzerOutput";
-        private string _pythonParserScriptPath = @"D:\Facultate\LICENTA\LicenseRepository\Apps\Scripts\VerilogPyParser\parser.py";
-        private string _pythonAnalyzerScriptPath = @"D:\Facultate\LICENTA\LicenseRepository\Apps\Scripts\VerilogPyCircuitAnalyzer\circuit_analyzer.py";
+        private string _pythonParserScriptPath = Environment.GetEnvironmentVariable("PYTHON_PARSER_SCRIPT_PATH");
+        private string _pythonAnalyzerScriptPath = Environment.GetEnvironmentVariable("PYTHON_ANALYZER_SCRIPT_PATH");
+        private string _pythonPath = Environment.GetEnvironmentVariable("PYTHON_PATH");
+
         private (string, string, string) RunPythonScript(ScriptType scriptType, string inputFilePath)
         {
             string outputFolder, pythonScriptPath;
@@ -115,12 +118,11 @@ namespace VerilogCircuitAnalyzerLib.Services
 
             }
 
-            var pythonExePath = @"C:\Users\baril\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe"; // or @"C:\Python311\python.exe"
             var outputFilePath = GetOutputFilePath(inputFilePath, outputFolder);
 
             var start = new ProcessStartInfo
             {
-                FileName = pythonExePath,
+                FileName = _pythonPath,
                 Arguments = $"\"{pythonScriptPath}\" \"{inputFilePath}\" \"{outputFilePath}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
