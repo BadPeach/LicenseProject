@@ -12,6 +12,7 @@ import {CircuitBuilderService, Expression} from '../services/circuit-builder.ser
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CircuitAnalysisApiService} from '../services/circuit-analysis-api.service';
 import {firstValueFrom} from 'rxjs';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 class CircuitInformationModel {
   totalDelay: number;
@@ -35,7 +36,8 @@ export class CircuitAnalyzerComponent {
   constructor (private clipboard: Clipboard,
                private circuitBuilder: CircuitBuilderService,
                private fb: FormBuilder,
-               private circuitAnalysisApiService: CircuitAnalysisApiService) {
+               private circuitAnalysisApiService: CircuitAnalysisApiService,
+               private spinner: NgxSpinnerService) {
     this.uploader = new FileUploader({
       url: `${this.circuitAnalysisApiService.circuitAnalysisAPI}/processVerilogFile`,
       disableMultipart: false,
@@ -269,6 +271,7 @@ export class CircuitAnalyzerComponent {
     // @ts-ignore
     analyzerRequest["ASTCircuit"] = this.parserResponse["parserScriptResponse"]["expression_tree"]
     console.log('Request payload:', analyzerRequest);
+    this.spinner.show();
     firstValueFrom(this.circuitAnalysisApiService.analyzeCircuit(analyzerRequest))
       .then((response: any) => {
         console.log('Response from server:', response);
@@ -344,6 +347,10 @@ export class CircuitAnalyzerComponent {
       })
       .catch((error: any) => {
         console.error('Error occurred while analyzing the circuit:', error);
-      });
+      })
+      .finally(() => {
+        this.spinner.hide();
+      })
+    ;
   }
 }

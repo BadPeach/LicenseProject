@@ -15,6 +15,7 @@ import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import {NgxSpinnerModule} from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import {HttpClientModule} from '@angular/common/http';
     DiagramModule,
     SymbolPaletteModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule
 
   ],
   providers: [],
