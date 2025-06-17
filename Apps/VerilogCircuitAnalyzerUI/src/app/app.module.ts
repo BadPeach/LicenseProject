@@ -16,6 +16,8 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {NgxSpinnerModule} from 'ngx-spinner';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
+
 
 @NgModule({
   declarations: [
@@ -37,10 +39,21 @@ import {NgxSpinnerModule} from 'ngx-spinner';
     SymbolPaletteModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    HighlightModule
 
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        coreLibraryLoader: () => import('highlight.js/lib/core'),
+        languages: {
+          verilog: () => import('highlight.js/lib/languages/verilog'),
+        }
+      }
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

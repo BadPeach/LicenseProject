@@ -1,1 +1,37 @@
-<p>home works!</p>
+<div class="row m-3">
+  <div class="col-md-7">
+    <h3>Sample File Viewer</h3>
+    <div class="card mt-3" >
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Verilog Code</span>
+        <button class="btn btn-sm btn-outline-danger" (click)="selectedText = ''">
+          <i class="fa fa-trash"></i> Clear
+        </button>
+      </div>
+      <div class="card-body">
+        <pre *ngIf="selectedText"><code [highlight]="selectedText" [language]="'verilog'"></code></pre>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Sample File Name</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let file of sampleFiles">
+        <td>{{ file }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm m-1" (click)="displayContent(file)">
+            <i class="fa fa-solid fa-eye"></i> Display</button>
+          <button class="btn btn-success btn-sm m-1" (click)="downloadFile(file)">
+            <i class="fa fa-solid fa-download"></i> Download</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
