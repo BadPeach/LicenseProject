@@ -6,14 +6,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-endpoint="processVerilogFile"
-#endpoint="analyzeCircuit"
+#endpoint="processVerilogFile"
+endpoint="analyzeCircuit"
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────────
-RESULTS_DIR = './results/aws_{}'.format(endpoint)
-DOCKER_DIR  = './results/aws_{}'.format(endpoint)
+RESULTS_DIR = './results/local_{}'.format(endpoint)
+DOCKER_DIR  = './results/local_{}'.format(endpoint)
 
-VUS_LEVELS = [1, 3, 5, 10, 15, 20, 30, 50]
+VUS_LEVELS = [1, 3, 5, 10, 15, 20, 30, 50, 100, 200, 300, 500]
 
 # color per VU level
 
@@ -27,6 +27,9 @@ COLORS = {
     30: 'tab:red',
     50: 'tab:brown',
     100: 'tab:gray',
+    200: 'magenta',
+    300: 'gold',
+    500: 'black',
 }
 
 # ─── HELPERS ────────────────────────────────────────────────────────────────────
