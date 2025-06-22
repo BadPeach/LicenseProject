@@ -1,20 +1,31 @@
 {
-  "module": "all_gates_logic",
-  "inputs": [
-    "A",
-    "B",
-    "C"
-  ],
-  "outputs": [
-    "Y"
-  ],
-  "gates": {
-    "and": 7,
-    "or": 2,
-    "xor": 1,
-    "not": 3
+  "Delays": {
+    "Model": "logical_effort",
+    "Params": {
+      "Tau": 5,
+      "GateTableLogicalEffort": {
+        "and": {
+          "override": false
+        },
+        "or": {
+          "override": false
+        },
+        "xor": {
+          "override": false
+        },
+        "not": {
+          "override": false
+        }
+      }
+    }
   },
-  "expression_tree": {
+  "Inputs": {
+    "A": 0,
+    "B": 0,
+    "C": 0
+  },
+  "TimeConstraint": 45,
+  "ASTCircuit": {
     "and": [
       {
         "and": [

@@ -41,6 +41,10 @@ class InputNode(ASTNode):
     def set_input_values(self, values: dict):
         if self.name in values:
             self.value = values[self.name]
+        elif self.name == "False":
+            self.value = False
+        elif self.name == "True":
+            self.value = True
         else:
             raise ValueError(f"Nu s-a furnizat valoare pentru intrarea {self.name}")
 

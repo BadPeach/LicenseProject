@@ -1,5 +1,5 @@
 from sympy import Symbol, And, Or, Not, Xor, simplify_logic
-from sympy.logic.boolalg import BooleanFunction
+from sympy.logic.boolalg import BooleanFunction, BooleanFalse, BooleanTrue
 
 from core.ast_nodes import InputNode, AndGate, OrGate, NotGate, XorGate
 
@@ -55,6 +55,11 @@ def sympy_to_ast(expr):
     if isinstance(expr, BooleanFunction):
         if len(args) == 1:
             return sympy_to_ast(args[0])
+
+    if isinstance(expr, BooleanFalse):
+        return InputNode("False")
+    elif isinstance(expr, BooleanTrue):
+        return InputNode("True")
 
     raise ValueError(f"Unsupported SymPy expression: {expr}")
 
