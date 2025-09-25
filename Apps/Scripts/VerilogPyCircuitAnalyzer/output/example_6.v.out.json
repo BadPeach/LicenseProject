@@ -1,98 +1,279 @@
 {
   "Options": {
     "OriginalCircuit": {
-      "TotalDelay": 151.66666666666663,
+      "TotalDelay": 128.33333333333334,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
-        "and": [
+        "xor": [
           {
             "and": [
               {
                 "and": [
                   {
                     "and": [
-                      {
-                        "and": [
-                          {
-                            "and": [
-                              {
-                                "and": [
-                                  "A1",
-                                  "A2"
-                                ]
-                              },
-                              "A3"
-                            ]
-                          },
-                          "A4"
-                        ]
-                      },
-                      "A5"
+                      "a1",
+                      "a2"
                     ]
                   },
-                  "A6"
+                  "a3"
                 ]
               },
-              "A7"
+              {
+                "or": [
+                  "o1",
+                  "o2"
+                ]
+              }
             ]
           },
-          "A8"
+          {
+            "not": {
+              "or": [
+                {
+                  "or": [
+                    {
+                      "or": [
+                        "o1",
+                        "o2"
+                      ]
+                    },
+                    {
+                      "and": [
+                        "o3",
+                        {
+                          "not": "a4"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "xor": [
+                    "o1",
+                    "o2"
+                  ]
+                }
+              ]
+            }
+          }
         ]
       }
     },
     "AggregatedTreeCircuit": {
-      "TotalDelay": 61.66666666666667,
+      "TotalDelay": 130.0,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
-        "and": [
-          "A8",
-          "A7",
-          "A6",
-          "A5",
-          "A4",
-          "A3",
-          "A1",
-          "A2"
+        "xor": [
+          {
+            "and": [
+              {
+                "or": [
+                  "o1",
+                  "o2"
+                ]
+              },
+              "a3",
+              "a1",
+              "a2"
+            ]
+          },
+          {
+            "not": {
+              "or": [
+                {
+                  "xor": [
+                    "o1",
+                    "o2"
+                  ]
+                },
+                {
+                  "and": [
+                    "o3",
+                    {
+                      "not": "a4"
+                    }
+                  ]
+                },
+                "o1",
+                "o2"
+              ]
+            }
+          }
         ]
       }
     },
     "BalancedTreeCircuit": {
-      "TotalDelay": 65.0,
+      "TotalDelay": 136.66666666666669,
+      "Output": 0,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "xor": [
+          {
+            "and": [
+              {
+                "and": [
+                  {
+                    "or": [
+                      "o1",
+                      "o2"
+                    ]
+                  },
+                  "a3"
+                ]
+              },
+              {
+                "and": [
+                  "a1",
+                  "a2"
+                ]
+              }
+            ]
+          },
+          {
+            "not": {
+              "or": [
+                {
+                  "or": [
+                    {
+                      "xor": [
+                        "o1",
+                        "o2"
+                      ]
+                    },
+                    {
+                      "and": [
+                        "o3",
+                        {
+                          "not": "a4"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "or": [
+                    "o1",
+                    "o2"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SympyCNFOptimizedCircuit": {
+      "TotalDelay": 105.0,
       "Output": 0,
       "SatisfyTimeConstraint": false,
       "ExpressionTree": {
         "and": [
           {
-            "and": [
+            "or": [
+              "a1",
               {
-                "and": [
-                  "A8",
-                  "A7"
-                ]
+                "not": "o1"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a1",
+              {
+                "not": "o2"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a2",
+              {
+                "not": "o1"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a2",
+              {
+                "not": "o2"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a3",
+              {
+                "not": "o1"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a3",
+              {
+                "not": "o2"
+              }
+            ]
+          },
+          {
+            "or": [
+              "a4",
+              "o1",
+              "o2",
+              {
+                "not": "o3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SympyDNFOptimizedCircuit": {
+      "TotalDelay": 78.33333333333334,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": {
+        "or": [
+          {
+            "and": [
+              "a1",
+              "a2",
+              "a3",
+              "o1"
+            ]
+          },
+          {
+            "and": [
+              "a1",
+              "a2",
+              "a3",
+              "o2"
+            ]
+          },
+          {
+            "and": [
+              "a4",
+              {
+                "not": "o1"
               },
               {
-                "and": [
-                  "A6",
-                  "A5"
-                ]
+                "not": "o2"
               }
             ]
           },
           {
             "and": [
               {
-                "and": [
-                  "A4",
-                  "A3"
-                ]
+                "not": "o1"
               },
               {
-                "and": [
-                  "A1",
-                  "A2"
-                ]
+                "not": "o2"
+              },
+              {
+                "not": "o3"
               }
             ]
           }
@@ -100,6 +281,6 @@
       }
     }
   },
-  "OptimizedCircuitType": "Aggregated Tree Circuit",
-  "OptimizedTotalDelay": 61.66666666666667
+  "OptimizedCircuitType": "Sympy DNF Optimized Circuit",
+  "OptimizedTotalDelay": 78.33333333333334
 }

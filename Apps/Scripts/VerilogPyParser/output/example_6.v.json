@@ -1,35 +1,24 @@
 {
-  "Delays": {
-    "Model": "logical_effort",
-    "Params": {
-      "Tau": 5,
-      "GateTableLogicalEffort": {
-        "xor": {
-          "override": false
-        },
-        "and": {
-          "override": false
-        },
-        "or": {
-          "override": false
-        },
-        "not": {
-          "override": false
-        }
-      }
-    }
+  "module": "ASTCircuit",
+  "inputs": [
+    "a1",
+    "a2",
+    "a3",
+    "o1",
+    "o2",
+    "o3",
+    "a4"
+  ],
+  "outputs": [
+    "Y"
+  ],
+  "gates": {
+    "xor": 2,
+    "and": 4,
+    "or": 4,
+    "not": 2
   },
-  "Inputs": {
-    "a1": 0,
-    "a2": "1",
-    "a3": 0,
-    "o1": "1",
-    "o2": 0,
-    "o3": "1",
-    "a4": 0
-  },
-  "TimeConstraint": 98,
-  "ASTCircuit": {
+  "expression_tree": {
     "xor": [
       {
         "and": [

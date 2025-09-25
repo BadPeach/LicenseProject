@@ -1,1 +1,3 @@
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
  .\run_k6_on_local_windows_machine.ps1 -Endpoint processVerilogFile -Vus 1 -Duration 20s

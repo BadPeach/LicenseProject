@@ -1,0 +1,176 @@
+{
+  "Options": {
+    "OriginalCircuit": {
+      "TotalDelay": 131.66666666666663,
+      "Output": 0,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "and": [
+              {
+                "and": [
+                  {
+                    "and": [
+                      {
+                        "and": [
+                          {
+                            "and": [
+                              "A",
+                              "B"
+                            ]
+                          },
+                          {
+                            "or": [
+                              "B",
+                              "C"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "xor": [
+                          "A",
+                          "C"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "not": {
+                      "or": [
+                        "A",
+                        "B"
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "and": [
+                    "A",
+                    "C"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "not": "B"
+          }
+        ]
+      }
+    },
+    "AggregatedTreeCircuit": {
+      "TotalDelay": 95.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "not": "B"
+          },
+          {
+            "not": {
+              "and": [
+                "A",
+                "C"
+              ]
+            }
+          },
+          {
+            "not": {
+              "or": [
+                "A",
+                "B"
+              ]
+            }
+          },
+          {
+            "xor": [
+              "A",
+              "C"
+            ]
+          },
+          {
+            "or": [
+              "B",
+              "C"
+            ]
+          },
+          "A",
+          "B"
+        ]
+      }
+    },
+    "BalancedTreeCircuit": {
+      "TotalDelay": 90.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": false,
+      "ExpressionTree": {
+        "and": [
+          {
+            "and": [
+              {
+                "not": "B"
+              },
+              {
+                "not": {
+                  "and": [
+                    "A",
+                    "C"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "and": [
+              {
+                "not": {
+                  "or": [
+                    "A",
+                    "B"
+                  ]
+                }
+              },
+              {
+                "xor": [
+                  "A",
+                  "C"
+                ]
+              }
+            ]
+          },
+          {
+            "and": [
+              {
+                "or": [
+                  "B",
+                  "C"
+                ]
+              },
+              "A",
+              "B"
+            ]
+          }
+        ]
+      }
+    },
+    "SympyCNFOptimizedCircuit": {
+      "TotalDelay": 0.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": "False"
+    },
+    "SympyDNFOptimizedCircuit": {
+      "TotalDelay": 0.0,
+      "Output": 0,
+      "SatisfyTimeConstraint": true,
+      "ExpressionTree": "False"
+    }
+  },
+  "OptimizedCircuitType": "Sympy CNF Optimized Circuit",
+  "OptimizedTotalDelay": 0.0
+}
